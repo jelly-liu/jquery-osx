@@ -1,8 +1,8 @@
-# jquery-osx
+# jQuery OSX
 jquery-osx is an jquery desktop project, use mac osx theme  
 jquery, desktop, jquery desktop, jquery mac, jquery mac osx, jquery osx, jquery apple  
 
-# browser compatibility, recommend order as follows  
+# Browser compatibility, recommend order as follows  
 [chrome],[firefox],[safari],[ie6+]  
 
 # Features  
