@@ -13,3 +13,6 @@ jquery, desktop, jquery desktop, jquery mac, jquery mac osx, jquery osx, jquery 
 ==support osx-dock  
 ==support osx-menu  
 ==support taksbar of opened osx-window  
+
+# ScreenShot  
+![jquery osx](https://github.com/jelly-liu/jquery-osx/blob/master/ScreenShot.jpg "jquery osx")  
