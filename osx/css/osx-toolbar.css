@@ -1,0 +1,67 @@
+/*------------------------------------- osx ToolBar And Menu----------------------------------------------*/
+#toolBar{
+    width:100%;
+    background: url(../images/toolBar_background.jpg) repeat-x;
+}
+
+#toolBar .tool{
+    border-right: 1px solid #252527;
+}
+
+#toolBar .tool li.menu-top, #toolBar .task span{
+    z-index: 3000;
+    position: relative;
+    cursor: pointer;
+    float: left;
+    padding: 0 8px 0;
+    height: 100%;
+}
+
+#toolBar .tool li.menu-top li{
+    z-index: 3000;
+    position: relative;
+    cursor: pointer;
+    width: 120px;
+    height: 21px;
+    line-height: 21px;
+    padding: 2px;
+    border-bottom: 1px solid #E2E2E2;
+}
+
+#toolBar .tool li.menu-top li .arrow{
+    position: absolute;
+    top: 0;
+    right: 4px;
+    width: 10px;
+    height: 100%;
+    background: url("../images/liSubArrow.png") center no-repeat;
+}
+
+#toolBar .tool .menu-sub{
+    position: absolute;
+    top: 21px;
+    left: 0;
+    display: none;
+    background: #F3F5F7;
+}
+
+#toolBar .tool .menu-sub-sub{
+    position: absolute;
+    top: 0;
+    left: 124px;
+    display: none;
+    background: #F3F5F7;
+}
+
+#toolBar .tool .liHover, #toolBar .task .liHover{
+    color: #FFF;
+    background: #5F82F3;
+}
+
+#toolBar .appleSys{
+    background: url(../images/apple-logo.png) no-repeat center 0px;
+}
+
+#toolBar .appleSysHover{
+    background: #5F82F3 url(../images/apple-logo.png) no-repeat center -20px;
+}

@@ -1,0 +1,32 @@
+/*------------------------------------- osx Dock ----------------------------------------------*/
+.osx-dock-outer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    heigh: 60px;
+    z-index: 2000;
+}
+.osx-dock td.mid {
+    position: relative;
+    cursor: pointer;
+    height: 55px;
+    background: url(../images/dock-bg.png) repeat-x bottom;
+}
+.osx-dock td.mid .titleProp{
+    position: absolute;
+    top: -20px;
+    left: 0;
+    color: #FFF;
+    text-align: center;
+    display: none;
+}
+.osx-dock .before {
+    background: url(../images/dock-bg-left.png) no-repeat left bottom;
+}
+.osx-dock .after {
+    background: url(../images/dock-bg-right.png) no-repeat right bottom;
+}
+.osx-dock img {
+    width: 48px;
+    border: none;
+}
