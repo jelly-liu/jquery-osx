@@ -134,8 +134,14 @@ function openWindowWhenDbclick($target, content, taskText){
             //add taskLi to taskUL
             var $taskLi = $('<span/>').text(taskText).attr({
                 win_id: osxWindowId,
-                cell_id: $target.attr('id')
+                cell_id: $target.attr('id'),
+                _screen: jQuery.DesktopGrid.dataObj.currentScreen
             }).click(function(){
+                //goto virtual screen
+                var _screen = parseInt($(this).attr("_screen"));
+                jQuery.DesktopGrid.goToScreen(_screen);
+
+                //toggle window
                 var $win = $('#' + $(this).attr('win_id'));
                 $.fn.osxWindow.toggle($win);
             }).appendTo($('#toolBar .task'));
@@ -255,12 +261,12 @@ $(function () {
     $('#Demo').click(function () {
         $('#api-demo-iframe').osxWindow('init', {
             title: 'Osx-Window-Hello',
-            width: 500,
-            height: 150,
+            width: 700,
+            height: 500,
             windowBackgroundOpacity: 1,
             modal: false,
             showManner: 'fadeIn',
-            maximizeAfterInit: true,
+            maximizeAfterInit: false,
             confirmBeforeClose: true
         });
     });
