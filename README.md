@@ -7,8 +7,9 @@ jquery, desktop, jquery desktop, jquery mac, jquery mac osx, jquery osx, jquery 
 
 # Features  
 ==support osx-message, include alert, confirm, prompt, note(tl, tc, tr, cl, cc, cr, bl, bc, br)  
-==support desktop grid, this is the special feature  
-==support screen thumbnail, this is the special feature  
+==support multi virtual screen
+==support desktop grid  
+==support screen thumbnail  
 ==support osx-window  
 ==support osx-dock  
 ==support osx-menu  
