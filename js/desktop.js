@@ -137,13 +137,17 @@ function openWindowWhenDbclick($target, content, taskText){
                 cell_id: $target.attr('id'),
                 _screen: jQuery.DesktopGrid.dataObj.currentScreen
             }).click(function(){
-                //goto virtual screen
-                var _screen = parseInt($(this).attr("_screen"));
-                jQuery.DesktopGrid.goToScreen(_screen);
-
-                //toggle window
                 var $win = $('#' + $(this).attr('win_id'));
-                $.fn.osxWindow.toggle($win);
+
+                var currentScreen = jQuery.DesktopGrid.dataObj.currentScreen;
+                var screen_id_of_win = parseInt($win.attr("screen_id"));
+
+                if(screen_id_of_win == currentScreen){
+                    $.fn.osxWindow.toggle($win);
+                }else{
+                    jQuery.DesktopGrid.goToScreen(screen_id_of_win);
+                    $.fn.osxWindow.open($win);
+                }
             }).appendTo($('#toolBar .task'));
 
             return true;
@@ -174,7 +178,8 @@ function openWindowWhenDbclick($target, content, taskText){
     var $win = $('<div/>').text($target.attr('id')).osxWindow('init', winConfig);
 
     $win.attr({
-        cell_id: $target.attr('id')
+        cell_id: $target.attr('id'),
+        screen_id: jQuery.DesktopGrid.dataObj.currentScreen
     });
 }
 

@@ -378,7 +378,7 @@ $(function () {
 
     /******* bind screen switch hot key *******/
     function bindScreenEvent() {
-        //17 crtl
+        //17 ctrl
         //18 alt
         //37 <-
         //39 ->

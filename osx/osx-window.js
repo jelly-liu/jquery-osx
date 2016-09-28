@@ -301,8 +301,6 @@
 
         $win.attr('_min', 'y');
 
-
-
         $win[opt.hideManner]('fast', function(){
             var $masker = $('#osx-window-masker_' + $win.attr('id'));
             if($masker.size() > 0){
