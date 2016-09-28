@@ -233,17 +233,29 @@
         opt.afterOpen($win);
     }
 
+    $.fn.osxWindow.isOpen = function ($win){
+        jQuery.osxUtils.logger.info('execute method of osxWindow: isOpen');
+        var isOpen;
+        var display = $win.css('display');
+        if(display == 'none'){
+            isOpen = false;
+        }else{
+            isOpen = true;
+        }
+        jQuery.osxUtils.logger.info('execute method of osxWindow: open=' + isOpen);
+        return isOpen;
+    }
+
     $.fn.osxWindow.toggle = function($content, opt){
         jQuery.osxUtils.logger.info('execute method of osxWindow: open');
         $content = $content || $(this);
         var $win = $content.closest('.osx-window');
-        opt = opt || $.fn.osxWindow.dataObj[$win.attr('id')];
 
-        var display = $win.css('display');
-        if(display == 'none'){
-            $win.osxWindow('open');
-        }else{
+        var isOpen = $.fn.osxWindow.isOpen($content, opt);
+        if(isOpen){
             $win.osxWindow('minimize');
+        }else{
+            $win.osxWindow('open');
         }
     }
 
