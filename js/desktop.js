@@ -134,8 +134,7 @@ function openWindowWhenDbclick($target, content, taskText){
             //add taskLi to taskUL
             var $taskLi = $('<span/>').text(taskText).attr({
                 win_id: osxWindowId,
-                cell_id: $target.attr('id'),
-                _screen: jQuery.DesktopGrid.dataObj.currentScreen
+                cell_id: $target.attr('id')
             }).click(function(){
                 var $win = $('#' + $(this).attr('win_id'));
 
@@ -179,7 +178,6 @@ function openWindowWhenDbclick($target, content, taskText){
 
     $win.attr({
         cell_id: $target.attr('id'),
-        screen_id: jQuery.DesktopGrid.dataObj.currentScreen
     });
 }
 

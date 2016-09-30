@@ -23,12 +23,19 @@
 
         opt = $.extend({}, $.fn.osxWindow.constantConfig, opt);
         opt.id = (opt.id == null ? ('osx-window_' + new Date().getTime() + '_' + new String(Math.random()).substr(2)) : opt.id);
-        $.fn.osxWindow.dataObj[opt.id] = opt;
+        $.fn.osxWindow.dataObj.opt[opt.id] = opt;
 
         var $win = $.fn.osxWindow[method]($(this), opt);
 
         return $win;
     };
+
+    //store some user config
+    $.fn.osxWindow.dataObj = {
+        opt: {},
+        zIndex: 4000,
+        wins:[],//all created and active osx windows
+    }
 
     $.fn.osxWindow.constantConfig = {
         //the window id
@@ -73,11 +80,6 @@
         afterClose: function(){jQuery.osxUtils.logger.info('osx-window, afterClose...');return true;}
     }
 
-    //store some user config
-    $.fn.osxWindow.dataObj = {
-        zIndex: 4000
-    }
-
     //init method, only call once when window was created
     $.fn.osxWindow.init = function ($content, opt){
         jQuery.osxUtils.logger.info('execute method of osxWindow: init');
@@ -86,7 +88,7 @@
         var $win = initWindowHtml($content, opt);
 
         //center the win on browser
-        jQuery.osxUtils.locateElement($win, $('body'));
+        jQuery.osxUtils.locateElement($win, $('body'), 'sd');
 
         //bind maximize, minimize, close event, ext.
         bindWindowEvent($win, opt);
@@ -94,23 +96,53 @@
         //open window
         if(opt.openAfterInit){
             if(opt.maximizeAfterInit){
-                $.fn.osxWindow.maximize($win, $.fn.osxWindow.dataObj[$win.attr('id')]);
+                $.fn.osxWindow.maximize($win, $.fn.osxWindow.dataObj.opt[$win.attr('id')]);
             }
-            $.fn.osxWindow.open($win, $.fn.osxWindow.dataObj[$win.attr('id')]);
+            $.fn.osxWindow.open($win, $.fn.osxWindow.dataObj.opt[$win.attr('id')]);
         }
+
+        //add $win to $.fn.osxWindow.dataObj.wins
+        addWinToWins($win);
 
         return $win;
     }
 
+    function addWinToWins($win){
+        var winId = $win.attr('id');
+        var wins = $.fn.osxWindow.dataObj.wins;
+        wins.push($win)
+        jQuery.osxUtils.logger.info('add win to wins, winId=' + winId + ', current win size=' + wins.length);
+    }
+
+    function removeWinFromWins($win){
+        var winId = $win.attr('id');
+        var wins = $.fn.osxWindow.dataObj.wins;
+        var wins2 = [];
+        var i = 0;
+        var removeWinId = null;
+        for(; i < wins.length; i++){
+            var $winTmp = wins[i];
+            var winIdTmp = $winTmp.attr('id');
+            if(winId == winIdTmp){
+                removeWinId = winIdTmp;
+            }else{
+                wins2.push($winTmp);
+            }
+        }
+        $.fn.osxWindow.dataObj.wins = wins2;
+        jQuery.osxUtils.logger.info('remove win from wins, winId=' + winId + ', current win size=' + wins2.length);
+    }
+
     function initWindowHtml($content, opt){
-        jQuery.osxUtils.logger.info('init window html')
+        jQuery.osxUtils.logger.info('init window html, winId=' + opt.id)
         var $win = $(winHtml);
 //        var $win = $('#tableWindow');
 //        jQuery.osxUtils.logger.info(winHtml);
 
         //set core css properties
         $win.attr({
-            id: opt.id
+            id: opt.id,
+            screen_id: jQuery.DesktopGrid.dataObj.currentScreen
         }).css({
             position: 'absolute',
             width: opt.width,
@@ -192,12 +224,12 @@
 
         //window close or destroy, will delete this element from document
         $win.find('.close').click(function(){
-            $.fn.osxWindow.close($win, $.fn.osxWindow.dataObj[$win.attr('id')]);
+            $.fn.osxWindow.close($win, $.fn.osxWindow.dataObj.opt[$win.attr('id')]);
         });
 
         //window min
         $win.find('.minimize').click(function(){
-            $.fn.osxWindow.minimize($win, $.fn.osxWindow.dataObj[$win.attr('id')]);
+            $.fn.osxWindow.minimize($win, $.fn.osxWindow.dataObj.opt[$win.attr('id')]);
         });
 
         //window max
@@ -205,15 +237,27 @@
             $win.find('.maximize').click();
         });
         $win.find('.maximize').click(function(){
-            $.fn.osxWindow.maximize($win, $.fn.osxWindow.dataObj[$win.attr('id')]);
+            $.fn.osxWindow.maximize($win, $.fn.osxWindow.dataObj.opt[$win.attr('id')]);
         });
+    }
+
+    $.fn.osxWindow.id = function ($win){
+        return $win.attr('id');
+    }
+
+    $.fn.osxWindow.position = function ($win){
+        var position = {}
+        position.top = parseInt($win.css('top'));
+        position.left = parseInt($win.css('left'));
+        jQuery.osxUtils.logger.info('execute method of osxWindow: position={top:' + position.top + ', left:' + position.left + '}');
+        return position;
     }
 
     $.fn.osxWindow.open = function ($content, opt){
         jQuery.osxUtils.logger.info('execute method of osxWindow: open');
         $content = $content || $(this);
         var $win = $content.closest('.osx-window');
-        opt = opt || $.fn.osxWindow.dataObj[$win.attr('id')];
+        opt = opt || $.fn.osxWindow.dataObj.opt[$win.attr('id')];
 
         var flag = opt.beforeOpen($win);
         if(flag + '' != 'undefined' && !flag){
@@ -263,7 +307,7 @@
         jQuery.osxUtils.logger.info('execute method of osxWindow: maximize');
         $content = $content || $(this);
         var $win = $content.closest('.osx-window');
-        opt = opt || $.fn.osxWindow.dataObj[$win.attr('id')];
+        opt = opt || $.fn.osxWindow.dataObj.opt[$win.attr('id')];
 
         var flag = opt.beforeMaximize($win);
         if(flag + '' != 'undefined' && !flag){
@@ -304,7 +348,7 @@
         jQuery.osxUtils.logger.info('execute method of osxWindow: minimize');
         $content = $content || $(this);
         var $win = $content.closest('.osx-window');
-        opt = opt || $.fn.osxWindow.dataObj[$win.attr('id')];
+        opt = opt || $.fn.osxWindow.dataObj.opt[$win.attr('id')];
 
         var flag = opt.beforeMinimize($win);
         if(flag + '' != 'undefined' && !flag){
@@ -327,8 +371,9 @@
         jQuery.osxUtils.logger.info('execute method of osxWindow: close');
         $content = $content || $(this);
         var $win = $content.closest('.osx-window');
-        opt = opt || $.fn.osxWindow.dataObj[$win.attr('id')];
+        opt = opt || $.fn.osxWindow.dataObj.opt[$win.attr('id')];
 
+        //customer design can not close
         var flag = opt.beforeClose($win);
         if(flag + '' != 'undefined' && !flag){
             return;
@@ -352,7 +397,8 @@
                     $masker.remove();
                 }
 
-                $.fn.osxWindow.dataObj[$win.attr('id')] = null;
+                removeWinFromWins($win);
+                $.fn.osxWindow.dataObj.opt[$win.attr('id')] = null;
                 $win.remove();
                 opt.afterClose();
             });

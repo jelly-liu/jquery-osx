@@ -30,6 +30,14 @@ $(function () {
                 }
             }
         },
+        //[0,max), not include max
+        nextInt: function (max) {
+            if(max <= 0){
+                return 0;
+            }
+            var rdm = Math.floor(Math.random() * (max + 1));
+            return rdm;
+        },
         //locate the $element
         //tl,tc,tr,ml,mc,mr,bl,bc,br
         locateElement: function ($element, $outer, location) {
@@ -50,7 +58,9 @@ $(function () {
                 locationS = 'cc';
             }
 
-            //tl,tc,tr,cl,cc,cr,bl,bc,br
+            //tl,tc,tr,cl,cc,cr,bl,bc,br,rdm,sd
+            //rdm means random position
+            //sd means slide
             var top = 0;
             var left= 0;
             switch (locationS){
@@ -90,12 +100,51 @@ $(function () {
                     top = vBottom; left = hRight;
                     break;
                 }
+                case 'rdm' : {
+                    rdm();
+                    break;
+                }
+                case 'sd' : {
+                    sd();
+                    break
+                }
                 default : {
-                    top = vBottom; left = hRight;
+                    top = vCenter; left = hCenter;
                     break;
                 }
             }
 
+            function rdm() {
+                //TODO...
+                top = jQuery.osxUtils.nextInt(outerHeight - 60);
+                left = jQuery.osxUtils.nextInt(outerWidth - 60);
+            }
+
+            function sd(){
+                var wins = $.fn.osxWindow.dataObj.wins;
+                if(wins.length == 0){
+                    top = vCenter; left = hCenter;
+                    return;
+                }
+
+                var i = 0;
+                var $winWithMax_Z_Index = null;
+                var zIndex = -1;
+                for(; i < wins.length; i++){
+                    var $winTmp = wins[i];
+                    var zIndexTmp = $winTmp.css('z-index');
+                    if(zIndexTmp > zIndex){
+                        zIndex = zIndexTmp;
+                        $winWithMax_Z_Index = $winTmp;
+                    }
+                }
+
+                var position = $.fn.osxWindow.position($winWithMax_Z_Index);
+                top = position.top + 30;
+                left = position.left + 30;
+            }
+
+            jQuery.osxUtils.logger.info('locate element, top=' + top + ', left=' + left);
             $element.css({
                 top: top,
                 left: left
