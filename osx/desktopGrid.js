@@ -100,21 +100,21 @@ $(function () {
         },
 
         /******* screen number start from 0, go to the screen that user specified *******/
-        goToScreen: function (screen) {
-            if (screen == jQuery.DesktopGrid.dataObj.currentScreen) {
-                jQuery.osxUtils.logger.info('current screen is equal to screen you want to jump, so do not jump, currentScreen=' + jQuery.DesktopGrid.dataObj.currentScreen + ', gotoScreen=' + screen);
+        goToScreen: function (toScreen) {
+            if (toScreen == jQuery.DesktopGrid.dataObj.currentScreen) {
+                jQuery.osxUtils.logger.info('current screen is equal to screen you want to jump, so do not jump, currentScreen=' + jQuery.DesktopGrid.dataObj.currentScreen + ', gotoScreen=' + toScreen);
                 return;
             }
 
-            if (screen < 0 || screen >= jQuery.DesktopGrid.dataObj.totalScreens) {
+            if (toScreen < 0 || toScreen >= jQuery.DesktopGrid.dataObj.totalScreens) {
                 jQuery.osxUtils.logger.info('screen must between 0 and ' + (jQuery.DesktopGrid.dataObj.totalScreens - 1));
                 return;
             }
 
             var totalScreen = jQuery.DesktopGrid.dataObj.totalScreens;
-            var currentScreen = this.dataObj.currentScreen;
-            var jumpDistance = (screen - currentScreen) * jQuery.DesktopGrid.dataObj.gridWidth;
-            jQuery.DesktopGrid.dataObj.currentScreen = screen;
+            var fromScreen = this.dataObj.currentScreen;
+            var jumpDistance = (toScreen - fromScreen) * jQuery.DesktopGrid.dataObj.gridWidth;
+            jQuery.DesktopGrid.dataObj.currentScreen = toScreen;
             for (var i = 0; i < totalScreen; i++) {
                 var $screen = $('#' + jQuery.DesktopGrid.dataObj.screenName + i);
                 $screen.animate({
@@ -123,9 +123,28 @@ $(function () {
             }
 
             //highlight the current screenThumbnail
-            highlightGridScreenThumbnail(screen);
+            highlightGridScreenThumbnail(toScreen);
 
-            jQuery.osxUtils.logger.info('currentScreen=' + currentScreen + ', gotoScreen=' + screen);
+            //record state all osx-window of this screen, and hide them
+            var wins = $.fn.osxWindow.dataObj.wins;
+            var i = 0;
+            for(; i < wins.length; i++){
+                var $win = wins[i];
+                var screen_id = $win.attr('screen_id');
+                if(screen_id == fromScreen){
+                    var isOpen = $.fn.osxWindow.isOpen($win);
+                    $win.attr('pre_state_is_open', isOpen);
+                    $.fn.osxWindow.minimize($win);
+                }else if(screen_id == toScreen){
+                    var pre_state_is_open_str = $win.attr('pre_state_is_open');
+                    jQuery.osxUtils.logger.info($win.attr('id') + '==>' + pre_state_is_open_str);
+                    if(pre_state_is_open_str == 'true'){
+                        $.fn.osxWindow.open($win);
+                    }
+                }
+            }
+
+            jQuery.osxUtils.logger.info('currentScreen=' + fromScreen + ', gotoScreen=' + toScreen);
         },
 
         /******* create grid screen thumbnail *******/

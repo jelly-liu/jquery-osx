@@ -281,10 +281,11 @@
         jQuery.osxUtils.logger.info('execute method of osxWindow: isOpen');
         var isOpen;
         var display = $win.css('display');
-        if(display == 'none'){
-            isOpen = false;
-        }else{
+        jQuery.osxUtils.logger.info('display====' + display);
+        if(display && display == 'block'){
             isOpen = true;
+        }else{
+            isOpen = false;
         }
         jQuery.osxUtils.logger.info('execute method of osxWindow: open=' + isOpen);
         return isOpen;
