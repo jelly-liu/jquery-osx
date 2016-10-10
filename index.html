@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>jQueryDesktopGrid</title>
+
+    <script type="text/javascript" src="jquery/jquery-1.8.3.min.js"></script>
+
+    <script type="text/javascript" src="jquery/plugin/jquery.parser.js"></script>
+    <script type="text/javascript" src="jquery/plugin/jquery.draggable.js"></script>
+    <script type="text/javascript" src="jquery/plugin/jquery.resizable.js"></script>
+
+    <script type="text/javascript" src="osx/osx-utils.js"></script>
+    <script type="text/javascript" src="osx/desktop-grid.js"></script>
+    <link rel="stylesheet" type="text/css" href="osx/css/osx-common.css">
+    <link rel="stylesheet" type="text/css" href="osx/css/osx-toolbar.css">
+    <link rel="stylesheet" type="text/css" href="osx/css/osx-window.css">
+    <link rel="stylesheet" type="text/css" href="osx/css/osx-dock.css">
+    <script type="text/javascript" src="osx/osx-toolbar.js"></script>
+    <script type="text/javascript" src="osx/osx-window.js"></script>
+    <script type="text/javascript" src="osx/osx-message.js"></script>
+    <script type="text/javascript" src="osx/osx-dock.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <script type="text/javascript" src="./js/index.js"></script>
+</head>
+<body>
+
+<!-- top tool bar -->
+<table id="toolBar">
+    <tr>
+        <td class="tool" align="left" width="190">
+            <ul>
+                <li id="appleSys" class="appleSys menu-top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                <li class="menu-top">File
+                    <ul class="menu-sub">
+                        <li>IPhone
+                            <span class="arrow"></span>
+                            <ul class="menu-sub-sub">
+                                <li>IPhone4</li>
+                                <li>IPhone4s</li>
+                                <li>IPhone5</li>
+                                <li>IPhone5s</li>
+                                <li>IPhone5c</li>
+                                <li>IPhone6</li>
+                                <li>IPhone6-Plus</li>
+                            </ul>
+                        </li>
+                        <li>IPad</li>
+                        <li>IPod</li>
+                        <li>Mac
+                            <span class="arrow"></span>
+                            <ul class="menu-sub-sub">
+                                <li>MacAir</li>
+                                <li>MacPro</li>
+                                <li>MacMini</li>
+                                <li>MacServer</li>
+                            </ul>
+                        </li>
+                        <li>IWatch</li>
+                        <li>ICar</li>
+                    </ul>
+                </li>
+                <li class="menu-top">Edit</li>
+                <li class="menu-top">Help</li>
+            </ul>
+        </td>
+        <td align="left" class="task"></td>
+        <td class="screenThumbnailTd" align="right"></td>
+    </tr>
+</table>
+
+<!-- desktop cell -->
+<div id="gridDivOuter" style="position: relative; width:100%; overflow: hidden;"></div>
+
+<!-- this is cell template, just for _make many cells, never show on desktop -->
+<div id="cellContentDiv" style="display: none;"></div>
+<div id="cellTemlate" style="display: none;">
+    <a id="cell_0" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-large-picture',size:'large',iconAlign:'top'">Picture</a>
+    <a id="cell_1" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-large-clipart',size:'large',iconAlign:'top'">Clip Art</a>
+    <a id="cell_2" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-large-shapes',size:'large',iconAlign:'top'">Shapes</a>
+    <a id="cell_3" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-large-smartart',size:'large',iconAlign:'top'">SmartArt</a>
+    <a id="cell_4" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-large-chart',size:'large',iconAlign:'top'">Chart</a>
+    <a id="cell_5" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-search',iconAlign:'top'" style="width:80px">Search</a>
+    <a id="cell_6" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-print',iconAlign:'top'" style="width:80px">PrintPrint</a>
+    <a id="cell_7" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-reload',iconAlign:'top'" style="width:80px">Reload</a>
+    <a id="cell_8" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-help',iconAlign:'top'" style="width:80px">Help</a>
+    <a id="cell_9" href="#" class="easyui-linkbutton gridCell" data-options="iconCls:'icon-help',iconAlign:'top'" style="width:80px">Help</a>
+</div>
+
+<!-- this is cell of each gird screen that user defined -->
+<div id="gridScreenDiv" style="display: none;">
+    <!-- the first grid screen -->
+    <div class="gridScreen">
+        <a id="cell_100" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/computer.png"/></li><li>Computer</li></ul></a>
+        <a id="cell_101" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/user_group.png"/></li><li>User</li></ul></a>
+        <a id="cell_102" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/weather.png"/></li><li>Weather</li></ul></a>
+        <a id="cell_103" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/qq.png"/></li><li>QQ</li></ul></a>
+        <a id="cell_104" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/bar_chart.png"/></li><li>Chart</li></ul></a>
+    </div>
+    <!-- the second grid screen -->
+    <div class="gridScreen">
+        <a id="cell_200" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/help.png"/></li><li>Help</li></ul></a>
+        <a id="cell_201" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/address.png"/></li><li>Address</li></ul></a>
+    </div>
+    <!-- the third grid screen -->
+    <div class="gridScreen">
+        <a id="cell_300" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/photo.png"/></li><li>Photo</li></ul></a>
+        <a id="cell_301" href="#" class="osxIcon gridCell"><ul><li><img src="./osx/images/contacts.png"/></li><li>Contacts</li></ul></a>
+    </div>
+</div>
+
+<!-- DOCK -->
+<table class="osx-dock-outer">
+    <tr>
+        <td align="center">
+            <table class="osx-dock">
+                <tr>
+                    <td class="before" width="38">&nbsp;&nbsp;</td>
+                    <td class="mid">
+                        <img id="Demo" src="./osx/images/demo.png" titleProp="Demo"/>
+                        <img id="Safari" src="./osx/images/safari.png" titleProp="Safari"/>
+                        <img id="Address" src="./osx/images/address.png" titleProp="Address"/>
+                        <img id="IChat" src="./osx/images/IChat.png" titleProp="IChat"/>
+                        <img id="Photo" src="./osx/images/photo.png" titleProp="Photo"/>
+                        <img id="Preferences" src="./osx/images/preferences.png" titleProp="Preferences"/>
+                        <img id="Trash" src="./osx/images/trash.png" titleProp="Trash"/>
+                        <span class="titleProp"></span>
+                    </td>
+                    <td class="after" width="38">&nbsp;&nbsp;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- api-demo -->
+<iframe id="api-demo-iframe" src="./api-demo.html" width="100%" height="100%" frameborder="no" marginwidth="0" marginheight="0" style="background: #0C0; display: none;"></iframe>
+
+</body>
+</html>

@@ -218,7 +218,7 @@
         //osx-window resizeable
         if(opt.resizable){
             $win.resizable({
-                containment: $('body')
+                containment: $(document.body)
             });
         }
 

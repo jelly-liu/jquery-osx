@@ -40,3 +40,20 @@ ul{
     padding: 2px 6px;
     margin: 4px 4px;
 }
+/*------------------------------------- osx desktop icon ----------------------------------------------*/
+.osxIcon{
+    display: none;
+    text-decoration: none;
+    text-align: center;
+    -moz-border-radius: 6px;      /* Gecko browsers */
+    -webkit-border-radius: 6px;   /* Webkit browsers */
+    border-radius:6px;            /* W3C syntax */
+}
+.osxIcon ul li{
+    overflow: hidden;
+    text-overflow:ellipsis;
+}
+.osxIcon ul li img{
+    width: 60%;
+    height: 60%;
+}
