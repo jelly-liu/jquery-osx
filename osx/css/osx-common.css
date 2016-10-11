@@ -54,6 +54,6 @@ ul{
     text-overflow:ellipsis;
 }
 .osxIcon ul li img{
-    width: 60%;
-    height: 60%;
+    width: 50%;
+    height: 50%;
 }

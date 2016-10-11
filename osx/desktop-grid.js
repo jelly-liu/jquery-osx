@@ -388,9 +388,21 @@ $(function () {
             screenRandomBackgroundColor: true,//give an random background color to all screen
             exchangeCellContent: true, //exchange two cellContent if the position already occupied
             easingManner: 'swing',//if you use jquery-easing plugin, then your can pass another easing manner name, such as easeOutBounce(i love this manner)
-            dragStartEvent: function () {//this event will fired when you start drag
+            dragStartEvent: function ($cell) {//this event will fired when you start drag
+                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
+                    return;
+                }
+                $cell.css({
+                    background: jQuery.osxUtils.getRandomColor()
+                })
             },
-            dragStopEvent: function () {//this event will fired when you stop drag
+            dragStopEvent: function ($cell) {//this event will fired when you stop drag
+                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
+                    return;
+                }
+                $cell.css({
+                    background: 'none'
+                })
             }
         };
     }
@@ -503,7 +515,6 @@ $(function () {
                 return 'stop';
             }
         }
-
         /******* enable draggable *******/
         //if you use jquery-easyui plugin, $.parser will be an object, easyui rewrite the draggable() method, so we process it like this
         var dragEventConfig = {};
@@ -511,12 +522,12 @@ $(function () {
             jQuery.osxUtils.logger.info('onStartDrag...');
             var $this = $(this);
             $this.css('z-index', ++jQuery.DesktopGrid.dataObj.zIndex);
-            jQuery.DesktopGrid.dataObj.dragStartEvent();
+            jQuery.DesktopGrid.dataObj.dragStartEvent($this);
         }
         dragEventConfig[getStartEventKey('stop')] = function(){
             jQuery.osxUtils.logger.info('onStopDrag...');
             rePositionCell($(this));
-            jQuery.DesktopGrid.dataObj.dragStopEvent();
+            jQuery.DesktopGrid.dataObj.dragStopEvent($this);
         }
         $this.draggable(dragEventConfig);
     }
