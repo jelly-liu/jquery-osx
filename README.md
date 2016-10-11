@@ -6,7 +6,7 @@ jquery, desktop, jquery desktop, jquery mac, jquery mac osx, jquery osx, jquery 
 [chrome],[firefox],[safari],[ie6+]  
 
 # Features  
-==support when switch to target virtual screen, just keep window open or minimize of target virtual screen
+==support just keep window open or minimize of virtual screen which switch to  
 ==support osx-message, include alert, confirm, prompt, note(tl, tc, tr, cl, cc, cr, bl, bc, br)  
 ==support multi virtual screen  
 ==support icon drag and drop to virtual grid cell on each screen  
