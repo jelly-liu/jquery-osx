@@ -64,7 +64,7 @@ function reInit(cellContentAry){
         gridDivPaddingLeft: 0,//the margin that first column to the left of gridDiv container
         gridDivPaddingRight: 0,//the margin that first column to the left of gridDiv container
         cellRandomBackgroundColor: true,//give an random background color to all cellContent
-        screenRandomBackgroundColor: false,//give an random background color to all screen
+        screenRandomBackgroundColor: true,//give an random background color to all screen
         exchangeCellContent: true, //exchange two cellContent if the position already occupied
         easingManner: 'swing'//if you use jquery-easing plugin, then your can pass another easing manner name, such as easeOutBounce(i love this manner)
         // dragStartEvent: function () {//this event will fired when you start drag
