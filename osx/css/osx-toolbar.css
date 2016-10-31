@@ -1,67 +1,114 @@
 /*------------------------------------- osx ToolBar And Menu----------------------------------------------*/
-#toolBar{
-    width:100%;
-    background: url(../images/toolBar_background.jpg) repeat-x;
+.abs {
+    position: absolute !important;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    z-index: 2000;
 }
 
-#toolBar .tool{
-    border-right: 1px solid #252527;
-}
 
-#toolBar .tool li.menu-top, #toolBar .task span{
-    z-index: 3000;
-    position: relative;
-    cursor: pointer;
-    float: left;
-    padding: 0 8px 0;
-    height: 100%;
-}
 
-#toolBar .tool li.menu-top li{
-    z-index: 3000;
-    position: relative;
-    cursor: pointer;
-    width: 120px;
-    height: 21px;
-    line-height: 21px;
-    padding: 2px;
-    border-bottom: 1px solid #E2E2E2;
-}
+/* `Bar >> Top + Bottom
+----------------------------------------------------------------------------------------------------*/
 
-#toolBar .tool li.menu-top li .arrow{
-    position: absolute;
-    top: 0;
-    right: 4px;
-    width: 10px;
-    height: 100%;
-    background: url("../images/liSubArrow.png") center no-repeat;
-}
-
-#toolBar .tool .menu-sub{
-    position: absolute;
-    top: 21px;
+#bar_top{
+    font-weight: bold;
+    padding: 0 10px;
     left: 0;
-    display: none;
-    background: #F3F5F7;
+    right: 0;
 }
 
-#toolBar .tool .menu-sub-sub{
-    position: absolute;
+#bar_top {
+    background: url(../images/toolBar_background.jpg) repeat-x;
+    border-bottom: 1px solid #333;
+    color: #999;
+    line-height: 21px;
+    padding-right: 20px;
+    text-shadow: #fff 0 1px 1px;
+    height: 21px;
     top: 0;
-    left: 124px;
+}
+
+/* `Bar >> Links
+----------------------------------------------------------------------------------------------------*/
+
+#bar_top li{
+    float: left;
+}
+
+#bar_top li a{
+    display: block;
+    padding: 0 10px;
+}
+
+#bar_top li a {
+    background-image: url(../images/bar_top_link.png);
+    background-repeat: no-repeat;
+    background-position: -99999px -99999px;
+    color: #000;
+    overflow: hidden;
+    height: 21px;
+    min-height: 1px;
+}
+
+#bar_top a.active {
+    background-color: #06c;
+    background-position: 0 0;
+    background-repeat: repeat-x;
+    color: #fff;
+    text-shadow: none;
+}
+
+#bar_top ul.menu {
+    background: #eee;
+    border: 1px solid #333;
+    border-top-width: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-background-clip: padding-box;
     display: none;
-    background: #F3F5F7;
+    font-weight: normal;
+    margin: 1px 0 0 -1px;
+    padding: 1px 1px 0;
+    position: absolute;
+    min-width: 200px;
+    z-index: 30;
 }
 
-#toolBar .tool .liHover, #toolBar .task .liHover{
-    color: #FFF;
-    background: #5F82F3;
+#bar_top ul.menu li {
+    float: none;
 }
 
-#toolBar .appleSys{
-    background: url(../images/apple-logo.png) no-repeat center 0px;
+#bar_top ul.menu a {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    min-width: 180px;
 }
 
-#toolBar .appleSysHover{
-    background: #5F82F3 url(../images/apple-logo.png) no-repeat center -20px;
+#bar_top ul.menu li:last-child a {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-background-clip: padding-box;
+}
+
+#bar_top ul.menu a:hover {
+    background: #06c url(../images/bar_top_link.png) repeat-x;
+    color: #fff;
+    text-shadow: none;
+}
+
+#bar_top li.task span{
+    margin: 3px;
+    cursor: pointer;
+    font-weight: normal;
 }

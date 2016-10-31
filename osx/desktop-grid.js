@@ -232,17 +232,20 @@ $(function () {
             overflow: 'hidden'
         });
 
+        //we calculate some key number
+        var barTopHeight = $('#bar_top').height();
+        var gridWidth = $gridDivOuter.width();
+        var gridHeight = $('body').height() - barTopHeight;
+
         //recommend this properties for gridDivOuter
         $gridDivOuter.css({
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            top: barTopHeight,
+            width:'100%',
+            height: gridHeight
         });
 
-
-
-        //we calculate some key number
-        var gridWidth = $gridDivOuter.width();
-        var gridHeight = $gridDivOuter.height();
         jQuery.DesktopGrid.dataObj.gridWidth = gridWidth;
         jQuery.DesktopGrid.dataObj.cellContentMargin = (jQuery.DesktopGrid.dataObj.cellWrapWH - jQuery.DesktopGrid.dataObj.cellWH) / 2;
 //        jQuery.osxUtils.logger.info('gridWidth=' + gridWidth + ', gridHeight=' + gridHeight);

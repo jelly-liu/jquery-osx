@@ -88,7 +88,7 @@ function reInit(cellContentAry){
     }
 
     /**************************** add grid screen thumbnail to toolBar ****************************/
-    var $screenThumbnailOuter = $('#toolBar .screenThumbnailTd');
+    var $screenThumbnailOuter = $('#bar_top .screenThumbnailTd');
     $screenThumbnailOuter.find('.screenThumbnail').remove();
     var $ul = $.DesktopGrid.createGridScreenThumbnail();
     $ul.css({
@@ -120,7 +120,7 @@ function openWindowWhenDbclick($target, content, taskText){
         afterOpen: function($win){
             //check taskLi exist in taskUL or not
             var isCreated = false;
-            $('#toolBar .task span').each(function(){
+            $('#bar_top .task span').each(function(){
                 if($(this).attr('win_id') == $win.attr('id')){
                     isCreated = true;
                     return false;
@@ -147,7 +147,7 @@ function openWindowWhenDbclick($target, content, taskText){
                     jQuery.DesktopGrid.goToScreen(screen_id_of_win);
                     $.fn.osxWindow.open($win);
                 }
-            }).appendTo($('#toolBar .task'));
+            }).appendTo($('#bar_top .task'));
 
             return true;
         },
@@ -160,7 +160,7 @@ function openWindowWhenDbclick($target, content, taskText){
             $('#' + cellId).removeAttr('win_id').fadeTo('fast', 1);
 
             //delete taskLi from taskUl
-            $('#toolBar .task span').each(function(){
+            $('#bar_top .task span').each(function(){
                 if($(this).attr('win_id') == $win.attr('id')){
                     $(this).remove();
                 }
@@ -203,7 +203,6 @@ $(function () {
     var logger = jQuery.osxUtils.logger;
 
     appendCellsToGridDiv();
-
     reInit();
 
     /**************************** when window resize, remake the desktop grid ****************************/

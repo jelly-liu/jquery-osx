@@ -27,48 +27,37 @@
 <body>
 
 <!-- top tool bar -->
-<table id="toolBar">
-    <tr>
-        <td class="tool" align="left" width="190">
-            <ul>
-                <li id="appleSys" class="appleSys menu-top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
-                <li class="menu-top">File
-                    <ul class="menu-sub">
-                        <li>IPhone
-                            <span class="arrow"></span>
-                            <ul class="menu-sub-sub">
-                                <li>IPhone4</li>
-                                <li>IPhone4s</li>
-                                <li>IPhone5</li>
-                                <li>IPhone5s</li>
-                                <li>IPhone5c</li>
-                                <li>IPhone6</li>
-                                <li>IPhone6-Plus</li>
-                            </ul>
-                        </li>
-                        <li>IPad</li>
-                        <li>IPod</li>
-                        <li>Mac
-                            <span class="arrow"></span>
-                            <ul class="menu-sub-sub">
-                                <li>MacAir</li>
-                                <li>MacPro</li>
-                                <li>MacMini</li>
-                                <li>MacServer</li>
-                            </ul>
-                        </li>
-                        <li>IWatch</li>
-                        <li>ICar</li>
-                    </ul>
+<div class="abs" id="bar_top">
+    <ul>
+        <li>
+            <a class="menu_trigger" href="#">File</a>
+            <ul class="menu">
+                <li>
+                    <a href="##">New</a>
                 </li>
-                <li class="menu-top">Edit</li>
-                <li class="menu-top">Help</li>
+                <li>
+                    <a href="##">Open</a>
+                </li>
+                <li>
+                    <a href="##">Settings</a>
+                </li>
             </ul>
-        </td>
-        <td align="left" class="task"></td>
-        <td class="screenThumbnailTd" align="right"></td>
-    </tr>
-</table>
+        </li>
+        <li>
+            <a class="menu_trigger" href="#">Edit</a>
+            <ul class="menu">
+                <li>
+                    <a href="##">Cut</a>
+                </li>
+                <li>
+                    <a href="##">Copy</a>
+                </li>
+            </ul>
+        </li>
+        <li class="task" style="float: left;"></li>
+        <li class="screenThumbnailTd" style="float: right;"></li>
+    </ul>
+</div>
 
 <!-- desktop cell -->
 <div id="gridDivOuter" style="position: relative; width:100%; overflow: hidden;"></div>

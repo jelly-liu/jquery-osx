@@ -33,7 +33,7 @@
     //store some user config
     $.fn.osxWindow.dataObj = {
         opt: {},
-        zIndex: 4000,
+        zIndex: 3000,
         wins:[],//all created and active osx windows
     }
 
