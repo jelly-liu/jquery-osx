@@ -75,7 +75,7 @@ $(function () {
                     return;
                 }
 
-                $(this).fadeTo('fast', 0.6);
+                $(this).fadeTo('fast', 0.8);
 
                 //create new window
                 var winIdNew = 'osxWindow_' + new Date().getTime();
@@ -187,7 +187,7 @@ $(function () {
         //create new window
         $target.attr({
             win_id: osxWindowId
-        });
+        }).fadeTo('fast', 0.8);
 
         var $win = $('<div/>').text($target.attr('id')).osxWindow('init', winConfig);
 
