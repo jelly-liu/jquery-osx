@@ -1,4 +1,11 @@
 /*------------------------------------- osx ToolBar And Menu----------------------------------------------*/
+#bar_top li.screenThumbnailTd{
+    position: absolute; right: 0px; top: 0px;
+}
+
+#bar_top ul{
+    float: left;
+}
 #bar_top{
     position: absolute !important;
     font-weight: bold;
