@@ -9,8 +9,7 @@
 }
 
 #bar_top {
-    background: url(../images/toolBar_background.jpg) repeat-x;
-    border-bottom: 1px solid #333;
+    background: url(../images/win-title-bg.jpg) repeat-x;
     color: #999;
     text-shadow: #fff 0 1px 1px;
     height: 21px;
@@ -61,11 +60,10 @@
     -webkit-background-clip: padding-box;
     display: none;
     font-weight: normal;
-    margin: 1px 0 0 -1px;
-    padding: 1px 1px 0;
+    margin: 0px 0 0 -1px;
+    padding: 0px 1px 0;
     position: absolute;
     min-width: 200px;
-    z-index: 30;
 }
 
 #bar_top ul.menu li {
