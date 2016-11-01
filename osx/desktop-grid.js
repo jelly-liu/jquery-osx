@@ -494,11 +494,7 @@ $(function () {
                     background = 'none';
                 }
             }else{
-                if(jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor.indexOf('url(') != -1){
-                    background = 'url(' + jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor + ')';
-                }else{
-                    background = jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor;
-                }
+                background = jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor;
             }
 
             //we just clone the girdDiv, do not need clone the sub element of girdDiv

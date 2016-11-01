@@ -26,7 +26,7 @@ body {
     /*background: url("../osx/images/osx02.jpg");*/
     /*background: url("../osx/images/osx03.jpg");*/
     /*background: url("../osx/images/osx04.jpg") center;*/
-    /*background-size:100% 100%;*/
+    /*background-size: cover; -moz-background-size: cover;*/
 }
 
 table{
