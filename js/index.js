@@ -64,7 +64,7 @@ function reInit(cellContentAry){
         gridDivPaddingLeft: 0,//the margin that first column to the left of gridDiv container
         gridDivPaddingRight: 0,//the margin that first column to the left of gridDiv container
         cellRandomBackgroundColor: false,//give an random background color to all cellContent
-        screenRandomBackgroundColor: true,//give an random background color to all screen
+        screenRandomBackgroundColor: 'white',//give an random background color to all screen, './osx/images/osx04.jpg'
         exchangeCellContent: true, //exchange two cellContent if the position already occupied
         easingManner: 'swing'//if you use jquery-easing plugin, then your can pass another easing manner name, such as easeOutBounce(i love this manner)
         // dragStartEvent: function () {//this event will fired when you start drag
@@ -88,7 +88,7 @@ function reInit(cellContentAry){
     }
 
     /**************************** add grid screen thumbnail to toolBar ****************************/
-    var $screenThumbnailOuter = $('#bar_top .screenThumbnailTd');
+    var $screenThumbnailOuter = $(jQuery.DesktopGrid.dataObj.barTopId).find('.screenThumbnailTd');
     $screenThumbnailOuter.find('.screenThumbnail').remove();
     var $ul = $.DesktopGrid.createGridScreenThumbnail();
     $ul.css({
@@ -120,7 +120,7 @@ function openWindowWhenDbclick($target, content, taskText){
         afterOpen: function($win){
             //check taskLi exist in taskUL or not
             var isCreated = false;
-            $('#bar_top .task span').each(function(){
+            $(jQuery.DesktopGrid.dataObj.barTopId).find('.task span').each(function(){
                 if($(this).attr('win_id') == $win.attr('id')){
                     isCreated = true;
                     return false;
@@ -147,7 +147,7 @@ function openWindowWhenDbclick($target, content, taskText){
                     jQuery.DesktopGrid.goToScreen(screen_id_of_win);
                     $.fn.osxWindow.open($win);
                 }
-            }).appendTo($('#bar_top .task'));
+            }).appendTo($(jQuery.DesktopGrid.dataObj.barTopId).find('.task'));
 
             return true;
         },
@@ -160,7 +160,7 @@ function openWindowWhenDbclick($target, content, taskText){
             $('#' + cellId).removeAttr('win_id').fadeTo('fast', 1);
 
             //delete taskLi from taskUl
-            $('#bar_top .task span').each(function(){
+            $(jQuery.DesktopGrid.dataObj.barTopId).find('.task span').each(function(){
                 if($(this).attr('win_id') == $win.attr('id')){
                     $(this).remove();
                 }

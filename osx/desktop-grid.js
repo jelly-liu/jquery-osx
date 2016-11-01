@@ -15,8 +15,90 @@
 
 $(function () {
     jQuery.DesktopGrid = {
-        /******* some data of desktop grid and config some parameter of user's *******/
-        dataObj: {},
+        dataObj: {
+            /******************** ----------------------------- ********************/
+            /******************** options that never be changed ********************/
+            /******************** ----------------------------- ********************/
+            barTopId: '#bar_top',
+            gridWidth: 0,//the grid width
+            cellIdIJ: {},//the id of cell[row, column] content, id such as <div id="yourDivId"/>
+            rows: 0,//the totalRows that calculate by the height of gridDiv and cellWrapWH
+            columns: 0,//the totalColumns that calculate by the width of gridDiv and cellWrapWH
+            totalCellsPerScreen: 0,//the totalCellsPerScreen that calculate by the width and height of gridDiv and cellWrapWH
+            totalScreens: 0,//like multi virtual screens of linux
+            currentScreen: 0,//the current screen that you see
+            zIndex: 1000 * 1,//the z-index of cellContent, when drag start, z-index will be increased, to _make sure the dragged cell keep on the top layer
+            making: false,//making the desktop grid
+            screenName: 'jQueryDesktopScreen',
+            cellContentMargin: 0,//cellContent margin to grid cell
+            totalCellContents: 0,//the total number of all cellContent
+            gridScreenThumbnail: null,//the thumbnail of all grid screen
+            /******************** ----------------------------------- ********************/
+            /******************** options that can be changed by user ********************/
+            /******************** ----------------------------------- ********************/
+            gridDivOuterSelector: null,//define the grid width and height
+            //the gridCell selector
+            //if gridScreenSelector is null, we use $(gridCellSelector) to select all cellContent
+            //if gridScreenSelector is not null, we use $(gridScreenSelector).find(gridCellSelector) to select the cellContent of each gridScreen
+            gridCellSelector: null,
+            gridScreenSelector: null,//gridScreen selector that user specified
+            cellWH: 90,//the cellContent width and height, this is the really true cellContent that you can seed via browser
+            cellWrapWH: 100,//the wrapper of cellContent, it was just used to convenience the calculate of cell abs position
+            gridDivPaddingTop: 0,//the margin that first row to the top of gridDiv container
+            gridDivPaddingBottom: 0,//the margin that last row to the top of gridDiv container
+            gridDivPaddingLeft: 0,//the margin that first column to the left of gridDiv container
+            gridDivPaddingRight: 0,//the margin that first column to the left of gridDiv container
+            cellRandomBackgroundColor: true,//give an random background color to all cellContent
+            screenRandomBackgroundColor: 'white',//give an random background color to all screen, true or false, or string like './osx/images/osx04.jpg' or white
+            exchangeCellContent: true, //exchange two cellContent if the position already occupied
+            easingManner: 'swing',//if you use jquery-easing plugin, then your can pass another easing manner name, such as easeOutBounce(i love this manner)
+            dragStartEvent: function ($cell) {//this event will fired when you start drag
+                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
+                    return;
+                }
+                $cell.css({
+                    background: jQuery.osxUtils.getRandomColor()
+                })
+            },
+            dragStopEvent: function ($cell) {//this event will fired when you stop drag
+                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
+                    return;
+                }
+                $cell.css({
+                    background: 'none'
+                })
+            },
+            reset: function () {
+                this.barTopId= '#bar_top',
+                    this.gridWidth = 0,
+                    this.cellIdIJ = {},
+                    this.rows = 0,
+                    this.columns = 0,
+                    this.totalCellsPerScreen = 0,
+                    this.totalScreens = 0,
+                    this.currentScreen = 0,
+                    this.zIndex = 1000 * 1,
+                    this.making = false,
+                    this.screenName = 'jQueryDesktopScreen',
+                    this.cellContentMargin = 0,
+                    this.totalCellContents = 0,
+                    this.gridScreenThumbnail = null,
+                    /******************** ----------------------------------- ********************/
+                    this.gridDivOuterSelector = null,
+                    this.gridCellSelector = null,
+                    this.gridScreenSelector = null,
+                    this.cellWH = 90,
+                    this.cellWrapWH = 100,
+                    this.gridDivPaddingTop = 0,
+                    this.gridDivPaddingBottom = 0,
+                    this.gridDivPaddingLeft = 0,
+                    this.gridDivPaddingRight = 0,
+                    this.cellRandomBackgroundColor = true,
+                    this.screenRandomBackgroundColor = 'white',
+                    this.exchangeCellContent = true,
+                    this.easingManner= 'swing'
+            }
+        },
 
         /******* prepare something to do make and return the cellContent array *******/
         remake: function (options) {
@@ -40,9 +122,9 @@ $(function () {
             }
 
             //reset some config of dataObj
-            resetDataObj();
+            jQuery.DesktopGrid.dataObj.reset();
 
-            //_make totally new grid screen
+            //make totally new grid screen
             var cellContentAry = make(options);
 
             //set making to false
@@ -233,7 +315,7 @@ $(function () {
         });
 
         //we calculate some key number
-        var barTopHeight = $('#bar_top').height();
+        var barTopHeight = $(jQuery.DesktopGrid.dataObj.barTopId).height();
         var gridWidth = $gridDivOuter.width();
         var gridHeight = $('body').height() - barTopHeight;
 
@@ -357,59 +439,6 @@ $(function () {
         }
     }
 
-    /******* reset some config of dataObj *******/
-    function resetDataObj() {
-        jQuery.DesktopGrid.dataObj = {
-            /******************** options that can not be changed by user ********************/
-            gridWidth: 0,//the grid width
-            cellIdIJ: {},//the id of cell[row, column] content, id such as <div id="yourDivId"/>
-            rows: 0,//the totalRows that calculate by the height of gridDiv and cellWrapWH
-            columns: 0,//the totalColumns that calculate by the width of gridDiv and cellWrapWH
-            totalCellsPerScreen: 0,//the totalCellsPerScreen that calculate by the width and height of gridDiv and cellWrapWH
-            totalScreens: 0,//like multi virtual screens of linux
-            currentScreen: 0,//the current screen that you see
-            zIndex: 1000 * 1,//the z-index of cellContent, when drag start, z-index will be increased, to _make sure the dragged cell keep on the top layer
-            making: true,//making the desktop grid
-            screenName: 'jQueryDesktopScreen',
-            cellContentMargin: 0,//cellContent margin to grid cell
-            totalCellContents: 0,//the total number of all cellContent
-            gridScreenThumbnail: null,//the thumbnail of all grid screen
-            /******************** options that can change by user options ********************/
-            gridDivOuterSelector: null,//define the grid width and height
-            //the gridCell selector
-            //if gridScreenSelector is null, we use $(gridCellSelector) to select all cellContent
-            //if gridScreenSelector is not null, we use $(gridScreenSelector).find(gridCellSelector) to select the cellContent of each gridScreen
-            gridCellSelector: null,
-            gridScreenSelector: null,//gridScreen selector that user specified
-            cellWH: 90,//the cellContent width and height, this is the really true cellContent that you can seed via browser
-            cellWrapWH: 100,//the wrapper of cellContent, it was just used to convenience the calculate of cell abs position
-            gridDivPaddingTop: 0,//the margin that first row to the top of gridDiv container
-            gridDivPaddingBottom: 0,//the margin that last row to the top of gridDiv container
-            gridDivPaddingLeft: 0,//the margin that first column to the left of gridDiv container
-            gridDivPaddingRight: 0,//the margin that first column to the left of gridDiv container
-            cellRandomBackgroundColor: true,//give an random background color to all cellContent
-            screenRandomBackgroundColor: true,//give an random background color to all screen
-            exchangeCellContent: true, //exchange two cellContent if the position already occupied
-            easingManner: 'swing',//if you use jquery-easing plugin, then your can pass another easing manner name, such as easeOutBounce(i love this manner)
-            dragStartEvent: function ($cell) {//this event will fired when you start drag
-                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
-                    return;
-                }
-                $cell.css({
-                    background: jQuery.osxUtils.getRandomColor()
-                })
-            },
-            dragStopEvent: function ($cell) {//this event will fired when you stop drag
-                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
-                    return;
-                }
-                $cell.css({
-                    background: 'none'
-                })
-            }
-        };
-    }
-
     /******* bind screen switch hot key *******/
     function bindScreenEvent() {
         //17 ctrl
@@ -457,6 +486,21 @@ $(function () {
     /******* init virtual screen *******/
     function initVirtualScreen($gridDivOuter) {
         for (var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++) {
+            var background = 'none';
+            if(jQuery.osxUtils.isTypeOfBoolean(jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor)){
+                if(jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor){
+                    background = jQuery.osxUtils.getRandomColor();
+                }else{
+                    background = 'none';
+                }
+            }else{
+                if(jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor.indexOf('url(') != -1){
+                    background = 'url(' + jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor + ')';
+                }else{
+                    background = jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor;
+                }
+            }
+
             //we just clone the girdDiv, do not need clone the sub element of girdDiv
             var $screen = $('<div/>').attr({
                 id: jQuery.DesktopGrid.dataObj.screenName + i
@@ -467,7 +511,7 @@ $(function () {
                 position: 'absolute',
                 top: 0,
                 left: 0 + jQuery.DesktopGrid.dataObj.gridWidth * i,
-                background: jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor == true ? jQuery.osxUtils.getRandomColor() : 'none'
+                background: background
             }).appendTo($gridDivOuter);
 
             //the first screen must be showed

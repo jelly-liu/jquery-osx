@@ -1,5 +1,9 @@
 $(function () {
     jQuery.osxUtils = {
+        typeOf: {
+            string: 'string',
+            boolean: 'boolean'
+        },
         /******* this is an logger *******/
         logger: {
             consoleEnable: (function () {
@@ -173,6 +177,22 @@ $(function () {
         /******* [0, maxNumber] *******/
         getRandomNumber: function(maxNumber){
             return Math.floor(Math.random() * maxNumber);
+        },
+        /******* [0, maxNumber] *******/
+        isTrue: function(str){
+            if(str === 'true' || str == true){
+                return true;
+            }
+            return false;
+        },
+        isTypeOfString: function (str) {
+            return typeof str == jQuery.osxUtils.string;
+        },
+        isTypeOfBoolean: function (str) {
+            return typeof str == jQuery.osxUtils.boolean;
+        },
+        copyPropertyName: function () {
+            
         }
     }
 });
