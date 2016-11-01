@@ -204,6 +204,11 @@
                 'z-index': $.fn.osxWindow.dataObj.zIndex++
             });
         });
+        $win.find('.osx-window-titleTr').mousedown(function () {
+            $win.css({
+                'z-index': $.fn.osxWindow.dataObj.zIndex++
+            });
+        })
 
         //osx-window draggable
         if(opt.draggable){
