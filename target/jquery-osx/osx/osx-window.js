@@ -34,7 +34,7 @@
     $.fn.osxWindow.dataObj = {
         opt: {},
         zIndex: 3000,
-        wins:[],//all created and active osx windows
+        wins:[]//all created and active osx windows
     }
 
     $.fn.osxWindow.constantConfig = {

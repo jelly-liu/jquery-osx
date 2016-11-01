@@ -177,7 +177,7 @@ function openWindowWhenDbclick($target, content, taskText){
     var $win = $('<div/>').text($target.attr('id')).osxWindow('init', winConfig);
 
     $win.attr({
-        cell_id: $target.attr('id'),
+        cell_id: $target.attr('id')
     });
 }
 

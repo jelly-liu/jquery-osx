@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%; overflow: auto; margin: 0; padding: 0;">
+<head lang="en">
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="jquery/jquery-1.8.3.min.js"></script>
+
+    <script type="text/javascript" src="jquery/plugin/jquery.parser.js"></script>
+    <script type="text/javascript" src="jquery/plugin/jquery.draggable.js"></script>
+    <script type="text/javascript" src="jquery/plugin/jquery.resizable.js"></script>
+
+    <script type="text/javascript" src="osx/osx-utils.js"></script>
+    <script type="text/javascript" src="osx/desktop-grid.js"></script>
+    <link rel="stylesheet" type="text/css" href="osx/css/osx-common.css">
+    <link rel="stylesheet" type="text/css" href="osx/css/osx-window.css">
+    <script type="text/javascript" src="osx/osx-window.js"></script>
+    <script type="text/javascript" src="osx/osx-message.js"></script>
+</head>
+<body style="width: 100%; height: 100%; overflow: auto; margin: 0; padding: 0; background: #A90">
+
+click me to open an alert
+<a id="api-osx-message-alert" class="osx-button">alert</a><br/>
+click me to open an alert
+<a id="api-osx-message-confirm" class="osx-button">confirm</a><br/>
+click me to open an alert
+<a id="api-osx-message-prompt" class="osx-button">prompt</a><br/>
+click me to open an alert
+<a id="api-osx-message-note-top-left" class="osx-button osx-note" manner="tl">note-top-left</a><br/>
+click me to open an alert
+<a id="api-osx-message-note-top-center" class="osx-button osx-note" manner="tc">note-top-center</a><br/>
+click me to open an alert
+<a id="api-osx-message-note-top-right" class="osx-button osx-note" manner="tr">note-top-right</a><br/>
+click me to open an alert
+<a id="api-osx-message-alert7" class="osx-button osx-note" manner="cl">note-center-left</a><br/>
+click me to open an alert
+<a id="api-osx-message-alert8" class="osx-button osx-note" manner="cc">note-center-center</a><br/>
+click me to open an alert
+<a id="api-osx-message-alert9" class="osx-button osx-note" manner="cr">note-center-right</a><br/>
+click me to open an alert
+<a id="api-osx-message-alert10" class="osx-button osx-note" manner="bl">note-bottom-left</a><br/>
+click me to open an alert
+<a id="api-osx-message-alert11" class="osx-button osx-note" manner="bc">note-bottom-center</a><br/>
+click me to open an alert
+<a id="api-osx-message-alert12" class="osx-button osx-note" manner="br">note-bottom-right</a><br/>
+
+<script type="text/javascript">
+$(function(){
+    $('#api-osx-message-alert').click(function(){
+        $('<div>This is an alert</div>').osxMessage('alert', {
+            title: 'Osx-Alert',
+            windowBackgroundOpacity: 0.8
+        });
+    });
+
+    $('#api-osx-message-confirm').click(function(){
+        $('<div>This is an confirm</div>').osxMessage('confirm', {
+            title: 'Osx-Confirm',
+            windowBackgroundOpacity: 0.8,
+            onOk: function () {
+                alert('onOk...');
+            },
+            onCancel: function () {
+                alert('onCancel...');
+            }
+        });
+    });
+
+    $('#api-osx-message-prompt').click(function(){
+        $('<div>This is an prompt</div>').osxMessage('prompt', {
+            title: 'Osx-Prompt',
+            windowBackgroundOpacity: 0.8,
+            onOk: function (text) {
+                alert('onOk, ' + text);
+            },
+            onCancel: function (text) {
+                alert('onCancel, ' + text);
+            }
+        });
+    });
+
+    $('.osx-note').click(function(){
+        var manner = $(this).attr('manner');
+        $('<div>This is an note</div>').osxMessage('note', {
+            title: 'Osx-Note',
+            windowBackgroundOpacity: 0.8,
+            timeout: 3,
+            location: manner,
+            showManner: 'slideDown',
+            hideManner: 'slideUp'
+        });
+    });
+})
+</script>
+</body>
+</html>

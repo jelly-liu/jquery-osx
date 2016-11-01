@@ -1,0 +1,92 @@
+/*------------------------------------- osx window ----------------------------------------------*/
+.osx-window-masker{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #EDEDED;
+}
+.osx-window {
+    position:absolute;
+    border:1px solid #333;
+    box-shadow:0px 10px 20px rgba(0,0,0,.5);
+    min-width: 200px;
+    overflow: hidden;
+}
+.osx-window-bg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: #EDEDED;
+}
+.osx-window-table{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.osx-window-titleTr {
+    width: 100%;
+    height: 20px;
+    line-height:20px;
+    position:relative;
+    color:#3c3c3c;
+    text-decoration:none;
+    text-shadow: 0 1px 1px #e7e7e7;
+    text-align:center;
+    background: url(../images/win-title-bg.jpg);
+    border-bottom:1px solid #333;
+}
+.osx-window-containerTr{
+    width: 100%;
+    height: 100%;
+}
+.osx-window-containerTd{
+}
+.osx-window-control {
+    list-style: none;
+    position:absolute;
+    top:0px;
+    left:0px;
+    width: auto;
+    height:20px;
+}
+
+.osx-window-control > li{
+    cursor: pointer;
+}
+
+.osx-window-control .close{
+    background: url(../images/win-control-close.png) no-repeat;
+}
+
+.osx-window-control .closeHover{
+    background: url(../images/win-control-close-hover.png) no-repeat;
+}
+
+.osx-window-control .minimize{
+    background: url(../images/win-control-min.png) no-repeat;
+}
+
+.osx-window-control .minimizeHover{
+    background: url(../images/win-control-min-hover.png) no-repeat;
+}
+
+.osx-window-control .maximize{
+    background: url(../images/win-control-max.png) no-repeat;
+}
+
+.osx-window-control .maximizeHover{
+    background: url(../images/win-control-max-hover.png) no-repeat;
+}
+
+.osx-window-control li, .osx-window-control-hover li{
+    display: block;
+    float: left;
+    width:20px;
+    height: 20px;
+}
