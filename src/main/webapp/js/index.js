@@ -187,7 +187,7 @@ $(function () {
         //create new window
         $target.attr({
             win_id: osxWindowId
-        }).fadeTo('fast', 0.6);
+        });
 
         var $win = $('<div/>').text($target.attr('id')).osxWindow('init', winConfig);
 
