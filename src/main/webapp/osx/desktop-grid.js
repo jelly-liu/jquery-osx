@@ -19,6 +19,9 @@ $(function () {
             /******************** ----------------------------- ********************/
             /******************** options that never be changed ********************/
             /******************** ----------------------------- ********************/
+            gridDivOuterSelector: '#gridDivOuter',
+            gridCellSelector: '.gridCell',
+            gridScreenSelector: '.gridScreen',
             barTopId: '#bar_top',
             gridWidth: 0,//the grid width
             cellIdIJ: {},//the id of cell[row, column] content, id such as <div id="yourDivId"/>
@@ -33,15 +36,11 @@ $(function () {
             cellContentMargin: 0,//cellContent margin to grid cell
             totalCellContents: 0,//the total number of all cellContent
             gridScreenThumbnail: null,//the thumbnail of all grid screen
+            lastWindowResizeTime: null,
+            doingReposition: false,
             /******************** ----------------------------------- ********************/
             /******************** options that can be changed by user ********************/
             /******************** ----------------------------------- ********************/
-            gridDivOuterSelector: null,//define the grid width and height
-            //the gridCell selector
-            //if gridScreenSelector is null, we use $(gridCellSelector) to select all cellContent
-            //if gridScreenSelector is not null, we use $(gridScreenSelector).find(gridCellSelector) to select the cellContent of each gridScreen
-            gridCellSelector: null,
-            gridScreenSelector: null,//gridScreen selector that user specified
             cellWH: 90,//the cellContent width and height, this is the really true cellContent that you can seed via browser
             cellWrapWH: 100,//the wrapper of cellContent, it was just used to convenience the calculate of cell abs position
             gridDivPaddingTop: 0,//the margin that first row to the top of gridDiv container
@@ -61,132 +60,63 @@ $(function () {
                 })
             },
             dragStopEvent: function ($cell) {//this event will fired when you stop drag
-                if(jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor){
+                if (jQuery.DesktopGrid.dataObj.cellRandomBackgroundColor) {
                     return;
                 }
                 $cell.css({
                     background: 'none'
                 })
-            },
-            reset: function () {
-                this.barTopId= '#bar_top',
-                    this.gridWidth = 0,
-                    this.cellIdIJ = {},
-                    this.rows = 0,
-                    this.columns = 0,
-                    this.totalCellsPerScreen = 0,
-                    this.currentScreen = 0,
-                    this.zIndex = 1000 * 1,
-                    this.making = false,
-                    this.screenName = 'jQueryDesktopScreen',
-                    this.cellContentMargin = 0,
-                    this.totalCellContents = 0,
-                    this.gridScreenThumbnail = null,
-                    /******************** ----------------------------------- ********************/
-                    this.gridDivOuterSelector = null,
-                    this.gridCellSelector = null,
-                    this.gridScreenSelector = null,
-                    this.cellWH = 90,
-                    this.cellWrapWH = 100,
-                    this.gridDivPaddingTop = 0,
-                    this.gridDivPaddingBottom = 0,
-                    this.gridDivPaddingLeft = 0,
-                    this.gridDivPaddingRight = 0,
-                    this.cellRandomBackgroundColor = true,
-                    this.screenRandomBackgroundColor = 'white',
-                    this.exchangeCellContent = true,
-                    this.easingManner= 'swing'
             }
         },
 
-        //only reposition cell
-        rePosition: function () {
-            var logger = jQuery.osxUtils.logger;
-            var $gridDivOuter = $(jQuery.DesktopGrid.dataObj.gridDivOuterSelector);
-            var $cellContent = $(jQuery.DesktopGrid.dataObj.gridCellSelector);
-            //we calculate some key number
-            var barTopHeight = $(jQuery.DesktopGrid.dataObj.barTopId).height();
-            var gridWidth = $gridDivOuter.width();
-            var gridHeight = $('body').height() - barTopHeight;
-
-            //recommend this properties for gridDivOuter
-            $gridDivOuter.css({
-                position: 'relative',
-                overflow: 'hidden',
-                top: barTopHeight,
-                width:'100%',
-                height: gridHeight
+        //monitor window resize event
+        monitorWindowResize: function () {
+            $(window).resize(function () {
+                jQuery.osxUtils.logger.info('window resizing ...');
+                jQuery.DesktopGrid.dataObj.lastWindowResizeTime = new Date().getTime();
             });
 
-            jQuery.DesktopGrid.dataObj.gridWidth = gridWidth;
-            jQuery.DesktopGrid.dataObj.cellContentMargin = (jQuery.DesktopGrid.dataObj.cellWrapWH - jQuery.DesktopGrid.dataObj.cellWH) / 2;
-//        jQuery.osxUtils.logger.info('gridWidth=' + gridWidth + ', gridHeight=' + gridHeight);
+            var windowResizeInterval = setInterval(function () {
+                if (jQuery.DesktopGrid.dataObj.lastWindowResizeTime == null) return;
+                if (jQuery.DesktopGrid.dataObj.doingReposition) return;
 
-            var rows = Math.floor((gridHeight - jQuery.DesktopGrid.dataObj.gridDivPaddingTop - jQuery.DesktopGrid.dataObj.gridDivPaddingBottom) / jQuery.DesktopGrid.dataObj.cellWrapWH);
-            var columns = Math.floor((gridWidth - jQuery.DesktopGrid.dataObj.gridDivPaddingLeft - jQuery.DesktopGrid.dataObj.gridDivPaddingRight) / jQuery.DesktopGrid.dataObj.cellWrapWH);
-            var totalCellsPerScreen = rows * columns;
-
-            jQuery.DesktopGrid.dataObj.rows = rows;
-            jQuery.DesktopGrid.dataObj.columns = columns;
-            jQuery.DesktopGrid.dataObj.totalCellsPerScreen = totalCellsPerScreen;
-
-            var cellContentAry = getCellContentAry();
-            for (var i = 0; i < cellContentAry.length; i++) {
-                var $screen = $('#' + jQuery.DesktopGrid.dataObj.screenName + i);
-                for (var j = 0; j < cellContentAry[i].length; j++) {
-//            if we have 4row, 3column, so (7%4=3,7/4=1), (8%/4=0,8/4=2), (11%4=3, 11/4=2)
-                    var row = j % jQuery.DesktopGrid.dataObj.rows;
-                    var column = Math.floor(j / jQuery.DesktopGrid.dataObj.rows);
-
-                    var cellInfo = getCellAbs(row, column, jQuery.DesktopGrid.dataObj.cellWrapWH, jQuery.DesktopGrid.dataObj.cellContentMargin);
-                    cellInfo.cellWrapWH = jQuery.DesktopGrid.dataObj.cellWrapWH;
-                    cellInfo.cellWH = jQuery.DesktopGrid.dataObj.cellWH;
-                    cellInfo.cellContentMargin = jQuery.DesktopGrid.dataObj.cellContentMargin;
-                    cellInfo.row = row;
-                    cellInfo.column = column;
-                    cellInfo.screen = i;
-
-                    var $cell = $(cellContentAry[i][j]);
-
-                    //decorate attribute and css of each cell element
-                    decorateCell($cell, cellInfo, true);
+                var curTime = new Date().getTime();
+                if(curTime - jQuery.DesktopGrid.dataObj.lastWindowResizeTime < 200){
+                    return;
                 }
-            }
+
+                jQuery.osxUtils.logger.info('window resize, rePosition start...');
+                jQuery.DesktopGrid.dataObj.doingReposition = true;
+                jQuery.DesktopGrid.reMake();
+                jQuery.DesktopGrid.dataObj.doingReposition = false;
+                jQuery.osxUtils.logger.info('window resize, rePosition end...');
+                jQuery.DesktopGrid.dataObj.lastWindowResizeTime = null;
+            }, 100);
         },
 
-        /******* prepare something to do make and return the cellContent array *******/
-        remake: function (options) {
-            //check making status, mainly resolve call the method _make() too many times when window resize
-            //this is the second safeguard to make sure remake only do once when window resize
-            if (jQuery.DesktopGrid.dataObj.making) {
-                jQuery.osxUtils.logger.info('desktop grid is making, so return...');
-                return null;
-            }
+        /*******do make *******/
+        make: function (options) {
+            jQuery.DesktopGrid.monitorWindowResize();
+            jQuery.DesktopGrid.bindGridScreenSwitchEvent();
 
-            jQuery.osxUtils.logger.info('-------------------------- desktop grid --------------------------');
+            $.extend(jQuery.DesktopGrid.dataObj, options);
 
-            //set making to true
-            jQuery.DesktopGrid.dataObj.making = true;
-
-            //delete the old grid screen
-            for (var i = 0; i < $.DesktopGrid.dataObj.totalScreens; i++) {
-                var screenId = $.DesktopGrid.dataObj.screenName + i;
-                $('#' + screenId).remove();
-                jQuery.osxUtils.logger.info('remake, delete screenId=' + screenId);
-            }
-
-            //reset some config of dataObj
-            jQuery.DesktopGrid.dataObj.reset();
-
-            //make totally new grid screen
-            var cellContentAry = make(options);
-
-            //set making to false
-            setTimeout(function () {
-                jQuery.DesktopGrid.dataObj.making = false;
-            }, 500);
+            initMake();
+            initVirtualScreen();
+            createGridScreenThumbnail();
+            var cellContentAry = getCellContentAry();
+            processCellContent(cellContentAry);
 
             return cellContentAry;
+        },
+
+        /*******do remake *******/
+        reMake: function () {
+            initMake();
+            initVirtualScreen();
+            createGridScreenThumbnail();
+            var cellContentAry = getCellContentAry();
+            processCellContent(cellContentAry);
         },
 
         /******* screen number start from 0, go to left screen of current screen *******/
@@ -247,11 +177,10 @@ $(function () {
                 return;
             }
 
-            var totalScreen = jQuery.DesktopGrid.dataObj.totalScreens;
             var fromScreen = this.dataObj.currentScreen;
             var jumpDistance = (toScreen - fromScreen) * jQuery.DesktopGrid.dataObj.gridWidth;
             jQuery.DesktopGrid.dataObj.currentScreen = toScreen;
-            for (var i = 0; i < totalScreen; i++) {
+            for (var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++) {
                 var $screen = $('#' + jQuery.DesktopGrid.dataObj.screenName + i);
                 $screen.animate({
                     left: $screen.position().left - jumpDistance
@@ -283,97 +212,62 @@ $(function () {
             jQuery.osxUtils.logger.info('currentScreen=' + fromScreen + ', gotoScreen=' + toScreen);
         },
 
-        /******* create grid screen thumbnail *******/
-        createGridScreenThumbnail: function(options){
-            if(jQuery.DesktopGrid.dataObj.gridScreenThumbnail != null){
-                return jQuery.DesktopGrid.dataObj.gridScreenThumbnail;
-            }
-
-            var $ul = $('<ul class="screenThumbnail"/>').css({
-                'display': 'block',
-                'background': 'none'
+        bindGridScreenSwitchEvent: function () {
+            //17 ctrl
+            //18 alt
+            //37 <-
+            //39 ->
+            $(window).keydown(function (e) {
+//            console.log(e.keyCode);
+                if (e.ctrlKey && e.keyCode == 37) {
+                    jQuery.DesktopGrid.leftScreen();
+                }
+                if (e.ctrlKey && e.keyCode == 39) {
+                    jQuery.DesktopGrid.rightScreen();
+                }
             });
-
-            var borderColor = jQuery.osxUtils.getRandomColor(50,50);
-            for(var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++){
-                var $li = $('<li/>');
-
-                $li.css({
-                    'position':'relative',
-                    'display': 'block',
-                    'float': 'left',
-                    'width': 26,
-                    'min-width': 26,
-                    'height': '100%',
-                    'line-height': 'auto',
-                    'text-align': 'center',
-                    'cursor': 'pointer',
-                    'background': 'none',
-                    'border-left': i == 0 ? '1px solid ' + borderColor : 'none',
-                    'border-right': i < jQuery.DesktopGrid.dataObj.totalScreens - 1 ? '1px solid ' + borderColor : 'none'
-                }).attr({
-                    '_screen': i
-                }).click(function(){
-                    var _screen = $(this).attr('_screen');
-                    if(_screen == jQuery.DesktopGrid.dataObj.currentScreen){
-                        return;
-                    }
-
-                    highlightGridScreenThumbnail(_screen);
-                    jQuery.DesktopGrid.goToScreen(_screen);
-                }).text(i);
-
-                $li.appendTo($ul);
-            }
-
-            jQuery.DesktopGrid.dataObj.gridScreenThumbnail = $ul;
-            highlightGridScreenThumbnail(0);
-
-            return $ul;
         }
     }
 
 
 
     /**************************** other functions that do not expose to user, so we define them here *****************************/
-    /******* highLight the current screenThumbnail *******/
-    /******* init virtual screen, blackLight other screenThumbnail *******/
-    function highlightGridScreenThumbnail(toScreen){
-        jQuery.DesktopGrid.dataObj.gridScreenThumbnail.find('li').css({
-            background: 'none'
-        });
-        jQuery.DesktopGrid.dataObj.gridScreenThumbnail.find('li').eq(toScreen).css({
-            background: jQuery.osxUtils.getRandomColor(0, 255)
-        });
-    }
-
-    /******* make desktop grid and return the cellContent array *******/
-    function make(options) {
-        $.extend(jQuery.DesktopGrid.dataObj, options);
-
-        var $gridDivOuter = $(jQuery.DesktopGrid.dataObj.gridDivOuterSelector);
-        var $cellContent = $(jQuery.DesktopGrid.dataObj.gridCellSelector);
-        jQuery.DesktopGrid.dataObj.totalCellContents = $cellContent.size();
-        jQuery.osxUtils.logger.info('cellContentSize=' + jQuery.DesktopGrid.dataObj.totalCellContents);
-
-        //can not find any cellContent
-        if (jQuery.DesktopGrid.dataObj.totalCellContents == 0) {
-            return;
+    function initMake() {
+        var $virtualScreens = $(jQuery.DesktopGrid.dataObj.gridScreenSelector);
+        if($virtualScreens.size() == 0){
+            jQuery.osxUtils.logger.info('size of grid screen is 0, grid screen select is:' + jQuery.DesktopGrid.dataObj.gridScreenSelector);
+            return false;
         }
+        jQuery.DesktopGrid.dataObj.totalScreens = $virtualScreens.size();
 
-        //recommend this properties for body
-        $('body').css({
+        var $cellContent = $(jQuery.DesktopGrid.dataObj.gridCellSelector);
+        if ($cellContent.size() == 0) {
+            jQuery.osxUtils.logger.info('size of grid cell is 0, grid cell select is:' + jQuery.DesktopGrid.dataObj.gridCellSelector);
+            return false;
+        }
+        jQuery.DesktopGrid.dataObj.totalCellContents = $cellContent.size();
+
+        //make sure this properties for body
+        var $body = $(document.body);
+        $body.css({
             position: 'relative',
             width:'100%',
             overflow: 'hidden'
         });
 
-        //we calculate some key number
+        //can not find any cellContent
+        var $cellContent = $(jQuery.DesktopGrid.dataObj.gridCellSelector);
+        if ($cellContent.size() == 0) {
+            return false;
+        }
+        jQuery.DesktopGrid.dataObj.totalCellContents = $cellContent.size();
+
+        var $gridDivOuter = $(jQuery.DesktopGrid.dataObj.gridDivOuterSelector);
         var barTopHeight = $(jQuery.DesktopGrid.dataObj.barTopId).height();
         var gridWidth = $gridDivOuter.width();
-        var gridHeight = $('body').height() - barTopHeight;
+        var gridHeight = $body.height() - barTopHeight;
 
-        //recommend this properties for gridDivOuter
+        //make sure this properties for gridDivOuter
         $gridDivOuter.css({
             position: 'relative',
             overflow: 'hidden',
@@ -394,62 +288,72 @@ $(function () {
         jQuery.DesktopGrid.dataObj.columns = columns;
         jQuery.DesktopGrid.dataObj.totalCellsPerScreen = totalCellsPerScreen;
 
-        var cellContentAry = null;
-        // if(jQuery.DesktopGrid.dataObj.gridScreenSelector){
-        //     cellContentAry = processScreenUserDefined($gridDivOuter);
-        // }else{
-        //     cellContentAry = processScreenAuto($gridDivOuter, $cellContent);
-        // }
-        cellContentAry = processScreenUserDefined($gridDivOuter);
-
-        //bind screen switch hot key
-        bindScreenEvent();
-
-        return cellContentAry;
+        return true;
     }
+    /******* create screenThumbnail *******/
+    function createGridScreenThumbnail(options){
+        if(jQuery.DesktopGrid.dataObj.gridScreenThumbnail != null){
+            return jQuery.DesktopGrid.dataObj.gridScreenThumbnail;
+        }
 
-    /******* user define several grid screen, each screen has some cellContent *******/
-    function processScreenUserDefined($gridDivOuter){
-        jQuery.osxUtils.logger.info('processScreenUserDefined...');
-        var $gridScreen = $(jQuery.DesktopGrid.dataObj.gridScreenSelector);
-        if($gridScreen.size() == 0){
-            jQuery.osxUtils.logger.info('can not find any grid screen by selector=' + jQuery.DesktopGrid.dataObj.gridScreenSelector);
+        var $screenThumbnailUl = $(jQuery.DesktopGrid.dataObj.barTopId).find('.screenThumbnailUl');
+        if($screenThumbnailUl.size() >0 ){
+            jQuery.osxUtils.logger.info('screen thumbnail already create');
             return;
         }
 
-        jQuery.DesktopGrid.dataObj.totalScreens = $gridScreen.size();
-        jQuery.osxUtils.logger.info('rows=' + jQuery.DesktopGrid.dataObj.rows + ', columns=' + jQuery.DesktopGrid.dataObj.columns + ', totalCellsPerScreen=' + jQuery.DesktopGrid.dataObj.totalCellsPerScreen + ', totalScreens=' + jQuery.DesktopGrid.dataObj.totalScreens);
+        $screenThumbnailUl = $('<ul class="screenThumbnailUl"/>').css({
+            'display': 'block',
+            'background': 'none'
+        });
 
-        //init virtual screen
-        initVirtualScreen($gridDivOuter);
+        var borderColor = jQuery.osxUtils.getRandomColor(50,50);
+        for(var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++){
+            var $li = $('<li/>');
 
-        //build cellContentAry
-        var cellContentAry = [];
-        for(var i = 0; i < $gridScreen.size(); i++){
-            cellContentAry[i] = [];
-            var $screen = $($gridScreen[i]);
-            var $cellContentPerScreen = $screen.find(jQuery.DesktopGrid.dataObj.gridCellSelector);
+            $li.css({
+                'position':'relative',
+                'display': 'block',
+                'float': 'left',
+                'width': 26,
+                'min-width': 26,
+                'height': '100%',
+                'line-height': 'auto',
+                'text-align': 'center',
+                'cursor': 'pointer',
+                'background': 'none',
+                'border-left': i == 0 ? '1px solid ' + borderColor : 'none',
+                'border-right': i < jQuery.DesktopGrid.dataObj.totalScreens - 1 ? '1px solid ' + borderColor : 'none'
+            }).attr({
+                '_screen': i
+            }).click(function(){
+                var _screen = parseInt($(this).attr('_screen'));
+                highlightGridScreenThumbnail(_screen);
+                jQuery.DesktopGrid.goToScreen(_screen);
+            }).text(i);
 
-            for(var j = 0; j < $cellContentPerScreen.size(); j++){
-                if(j >= jQuery.DesktopGrid.dataObj.totalCellsPerScreen){
-                    jQuery.osxUtils.logger.info('too many cellContent, so break, cellContents=' + $cellContentPerScreen.size() + ', totalCellsPerScreen=' + jQuery.DesktopGrid.dataObj.totalCellsPerScreen);
-                    break;
-                }
-                cellContentAry[i][j] = $($cellContentPerScreen[j]);
-                // cellContentAry[i][j] = $($cellContentPerScreen[j]).clone(true, true);
-            }
+            $li.appendTo($screenThumbnailUl);
         }
 
-        //put cellContent into right cell of grid
-        processCellContent(cellContentAry);
+        jQuery.DesktopGrid.dataObj.gridScreenThumbnail = $screenThumbnailUl;
+        highlightGridScreenThumbnail(0);
 
-        return cellContentAry;
+        return $screenThumbnailUl.appendTo($(jQuery.DesktopGrid.dataObj.barTopId).find('.screenThumbnailTd'));
+    }
+
+    /******* highLight the current screenThumbnail *******/
+    function highlightGridScreenThumbnail(toScreen){
+        jQuery.DesktopGrid.dataObj.gridScreenThumbnail.find('li').css({
+            background: 'none'
+        });
+        jQuery.DesktopGrid.dataObj.gridScreenThumbnail.find('li').eq(toScreen).css({
+            background: jQuery.osxUtils.getRandomColor(0, 255)
+        });
     }
 
     /******* put cellContent into right cell of grid *******/
     function processCellContent(cellContentAry){
         for (var i = 0; i < cellContentAry.length; i++) {
-            var $screen = $('#' + jQuery.DesktopGrid.dataObj.screenName + i);
             for (var j = 0; j < cellContentAry[i].length; j++) {
 //            if we have 4row, 3column, so (7%4=3,7/4=1), (8%/4=0,8/4=2), (11%4=3, 11/4=2)
                 var row = j % jQuery.DesktopGrid.dataObj.rows;
@@ -464,12 +368,10 @@ $(function () {
                 cellInfo.column = column;
                 cellInfo.screen = i;
 
-                var $cell = $(cellContentAry[i][j]);
+                var $cell = cellContentAry[i][j];
 
                 //decorate attribute and css of each cell element
                 decorateCell($cell, cellInfo);
-
-                $cell.appendTo($screen);
 
                 jQuery.DesktopGrid.dataObj.cellIdIJ[i + '_' + row + '_' + column] = $cell.attr('id');
 //                jQuery.osxUtils.logger.info('screen' + i + ', row=' + row + ', column=' + column + ', id=' + $cell.attr('id'));
@@ -497,26 +399,27 @@ $(function () {
     /******* split cell into different screen *******/
     function getCellContentAry() {
         var cellContentAry = [];
-        var $gridScreen = $(jQuery.DesktopGrid.dataObj.gridScreenSelector);
-        for(var i = 0; i < $gridScreen.size(); i++){
+        var $screens = $(jQuery.DesktopGrid.dataObj.gridScreenSelector);
+        for(var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++){
             cellContentAry[i] = [];
-            var $screen = $($gridScreen.eq(i));
+            var $screen = $screens.eq(i);
             var $cellContentPerScreen = $screen.find(jQuery.DesktopGrid.dataObj.gridCellSelector);
             for(var j = 0; j < $cellContentPerScreen.size(); j++){
                 if(j >= jQuery.DesktopGrid.dataObj.totalCellsPerScreen){
                     jQuery.osxUtils.logger.info('too many cellContent, so break, cellContents=' + $cellContentPerScreen.size() + ', totalCellsPerScreen=' + jQuery.DesktopGrid.dataObj.totalCellsPerScreen);
                     break;
                 }
-                cellContentAry[i][j] = $($cellContentPerScreen[j]);
-                // cellContentAry[i][j] = $($cellContentPerScreen[j]).clone(true, true);
+                cellContentAry[i][j] = $cellContentPerScreen.eq(j);
             }
         }
         return cellContentAry;
     }
 
     /******* init virtual screen *******/
-    function initVirtualScreen($gridDivOuter) {
-        var $screens = $(jQuery.DesktopGrid.dataObj.gridScreenSelector);
+    function initVirtualScreen() {
+        var $gridDivOuter = $(jQuery.DesktopGrid.dataObj.gridDivOuterSelector);
+        var $virtualScreens = $(jQuery.DesktopGrid.dataObj.gridScreenSelector);
+
         for (var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++) {
             var background = 'none';
             if(jQuery.osxUtils.isTypeOfBoolean(jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor)){
@@ -529,25 +432,23 @@ $(function () {
                 background = jQuery.DesktopGrid.dataObj.screenRandomBackgroundColor;
             }
 
-            //we just clone the girdDiv, do not need clone the sub element of girdDiv
-            var $screen = $screens.eq(i).attr({
+            var $screen = $virtualScreens.eq(i);
+            $screen.attr({
                 id: jQuery.DesktopGrid.dataObj.screenName + i
             }).css({
+                position: 'absolute',
                 overflow:'hidden',
                 width: '100%',
                 height: '100%',
-                position: 'absolute',
                 top: 0,
                 left: 0 + jQuery.DesktopGrid.dataObj.gridWidth * i,
                 background: background
             }).appendTo($gridDivOuter);
 
             //the first screen must be showed
-            if (i == 0) {
+            if (i == jQuery.DesktopGrid.dataObj.currentScreen) {
                 $screen.show();
             }
-
-            jQuery.osxUtils.logger.info('create grid screenId=' + $screen.attr('id'));
         }
 
         jQuery.DesktopGrid.dataObj.currentScreen = 0;
@@ -666,7 +567,7 @@ $(function () {
         var cellAbsDragTo = getCellAbs(rowNew, columnNew, cellWrapWH, cellMargin);
 
         if (rowSrcFrom == rowNew && columnSrcFrom == columnNew) {
-            jQuery.osxUtils.logger.log('position, row=' + rowNew + ', column=' + columnNew + ' is the src position, do not need move');
+            jQuery.osxUtils.logger.info('position, row=' + rowNew + ', column=' + columnNew + ' is the src position, do not need move');
             moveCellTo(jQuery.DesktopGrid.dataObj.currentScreen, $this, cellAbsDragFrom, rowSrcFrom, columnSrcFrom, rowSrcFrom, columnSrcFrom, false);
             return;
         }
@@ -681,11 +582,11 @@ $(function () {
         } else {
             //the target cell is already occupied
             if (jQuery.DesktopGrid.dataObj.exchangeCellContent) {
-                jQuery.osxUtils.logger.log('position, row=' + rowNew + ', column=' + columnNew + ' is already occupied, exchange two cells content');
+                jQuery.osxUtils.logger.info('position, row=' + rowNew + ', column=' + columnNew + ' is already occupied, exchange two cells content');
                 moveCellTo(jQuery.DesktopGrid.dataObj.currentScreen, $this, cellAbsDragTo, rowSrcFrom, columnSrcFrom, rowNew, columnNew, false);
                 moveCellTo(jQuery.DesktopGrid.dataObj.currentScreen, $cellDragTo, cellAbsDragFrom, rowNew, columnNew, rowSrcFrom, columnSrcFrom, false);
             } else {
-                jQuery.osxUtils.logger.log('position, row=' + rowNew + ', column=' + columnNew + ' is already occupied, please change other position');
+                jQuery.osxUtils.logger.info('position, row=' + rowNew + ', column=' + columnNew + ' is already occupied, please change other position');
                 moveCellTo(jQuery.DesktopGrid.dataObj.currentScreen, $this, cellAbsDragFrom, rowSrcFrom, columnSrcFrom, rowSrcFrom, columnSrcFrom, false);
             }
         }

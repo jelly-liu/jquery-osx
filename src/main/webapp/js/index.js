@@ -1,30 +1,8 @@
 /**************************** when window resize, remake the desktop grid ****************************/
-//because resize will be fired more than one times
-//so we process this event like this way
-function rePositionWhenWindowResize(){
-    var logger = jQuery.osxUtils.logger;
-
-    var windowResize = false;
-    $(window).resize(function () {
-        windowResize = true;
-    });
-    var windowResizeInterval = setInterval(function () {
-        if (!windowResize) return;
-        logger.info('window resize, rePosition start...');
-        jQuery.DesktopGrid.rePosition();
-        windowResize = false;
-        logger.info('window resize, rePosition enddd...');
-    }, 1500);
-}
-
 $(function () {
-    rePositionWhenWindowResize();
     var logger = jQuery.osxUtils.logger;
     /***************** _make desktop grid *****************/
     var desktopGridConfig = {
-        gridDivOuterSelector: '#gridDivOuter',//the gridDivOuter selector, we use $(gridDivOuterSelector) to select the gridDivOuter, to determine the gridScreen size, it is very important
-        gridCellSelector: '.gridCell',//the gridCell selector, we use $(gridCellSelector) to select the cellContent element
-        gridScreenSelector: 'div.gridScreen',
         cellWH: 70,//the cellContent width and height, this is the really true cellContent that you can seed via browser
         cellWrapWH: 80,//the wrapper of cellContent, it was just used to convenience the calculate of cell abs position
         gridDivPaddingTop: 0,//the margin that first row to the top of gridDiv container
@@ -42,8 +20,9 @@ $(function () {
     };
 
     /***************** _make desktop grid *****************/
-    var cellContentAry = $.DesktopGrid.remake(desktopGridConfig);
-    //bind doubleClick event to each cellContent
+    var cellContentAry = $.DesktopGrid.make(desktopGridConfig);
+
+    /***************** bind your own doubleClick event to each cellContent *****************/
     for (var i = 0; i < cellContentAry.length; i++) {
 //        logger.info('cellContents of screen' + i + '=' + cellContentAry[i].length);
         for (var j = 0; j < cellContentAry[i].length; j++) {
@@ -52,15 +31,6 @@ $(function () {
             });
         }
     }
-
-    /**************************** add grid screen thumbnail to toolBar ****************************/
-    var $screenThumbnailOuter = $(jQuery.DesktopGrid.dataObj.barTopId).find('.screenThumbnailTd');
-    $screenThumbnailOuter.find('.screenThumbnail').remove();
-    var $ul = $.DesktopGrid.createGridScreenThumbnail();
-    $ul.css({
-        float:'right'
-    });
-    $screenThumbnailOuter.append($ul);
 
     /**************************** click osx dock element to open an osx-window ****************************/
     $('.osx-dock td.mid').each(function(){

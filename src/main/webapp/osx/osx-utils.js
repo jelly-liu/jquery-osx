@@ -43,7 +43,8 @@ $(function () {
             return rdm;
         },
         //locate the $element
-        //tl,tc,tr,ml,mc,mr,bl,bc,br
+        //tl,tc,tr,ml,mc,mr,bl,bc,br,sd
+        //sd, means slide
         locateElement: function ($element, $outer, location) {
             jQuery.osxUtils.logger.info('locate element...');
             var outerWidth = $outer.width();
@@ -132,10 +133,16 @@ $(function () {
                 }
 
                 var i = 0;
-                var $winWithMax_Z_Index = null;
                 var zIndex = -1;
+                var $winWithMax_Z_Index = null;
                 for(; i < wins.length; i++){
                     var $winTmp = wins[i];
+                    var screenId = parseInt($winTmp.attr('screen_id'));
+
+                    if(screenId != jQuery.DesktopGrid.dataObj.currentScreen){
+                        continue;
+                    }
+
                     var zIndexTmp = $winTmp.css('z-index');
                     if(zIndexTmp > zIndex){
                         zIndex = zIndexTmp;
@@ -143,9 +150,15 @@ $(function () {
                     }
                 }
 
-                var position = $.fn.osxWindow.position($winWithMax_Z_Index);
-                top = position.top + 30;
-                left = position.left + 30;
+                if($winWithMax_Z_Index == null){
+                    jQuery.osxUtils.logger.info('can not find any win of grid screen' + jQuery.DesktopGrid.dataObj.currentScreen + ', will locate win to center');
+                    //goto case cc
+                    top = vCenter; left = hCenter;
+                }else{
+                    var position = $.fn.osxWindow.position($winWithMax_Z_Index);
+                    top = position.top + 30;
+                    left = position.left + 30;
+                }
             }
 
             jQuery.osxUtils.logger.info('locate element, top=' + top + ', left=' + left);
