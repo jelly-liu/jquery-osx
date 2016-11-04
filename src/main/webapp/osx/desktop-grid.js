@@ -179,9 +179,11 @@ $(function () {
 
             var fromScreen = this.dataObj.currentScreen;
             var jumpDistance = (toScreen - fromScreen) * jQuery.DesktopGrid.dataObj.gridWidth;
+            jQuery.osxUtils.logger.info('goto screen, jump distance=' + jumpDistance)
             jQuery.DesktopGrid.dataObj.currentScreen = toScreen;
             for (var i = 0; i < jQuery.DesktopGrid.dataObj.totalScreens; i++) {
                 var $screen = $('#' + jQuery.DesktopGrid.dataObj.screenName + i);
+                jQuery.osxUtils.logger.info('goto screen, left=' + $screen.position().left + ', jump distance=' + jumpDistance)
                 $screen.animate({
                     left: $screen.position().left - jumpDistance
                 }, 'fast');

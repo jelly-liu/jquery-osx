@@ -1,7 +1,7 @@
-/**************************** when window resize, remake the desktop grid ****************************/
 $(function () {
     var logger = jQuery.osxUtils.logger;
-    /***************** _make desktop grid *****************/
+
+    /***************** _make desktop grid start *****************/
     var desktopGridConfig = {
         cellWH: 70,//the cellContent width and height, this is the really true cellContent that you can seed via browser
         cellWrapWH: 80,//the wrapper of cellContent, it was just used to convenience the calculate of cell abs position
@@ -18,57 +18,25 @@ $(function () {
         // dragStopEvent: function () {//this event will fired when you stop drag
         // }
     };
-
-    /***************** _make desktop grid *****************/
     var cellContentAry = $.DesktopGrid.make(desktopGridConfig);
+    /***************** _make desktop grid end *****************/
 
-    /***************** bind your own doubleClick event to each cellContent *****************/
+    /***************** open osx-windows when click cell *****************/
     for (var i = 0; i < cellContentAry.length; i++) {
-//        logger.info('cellContents of screen' + i + '=' + cellContentAry[i].length);
         for (var j = 0; j < cellContentAry[i].length; j++) {
             $(cellContentAry[i][j]).dblclick(function(){
-                openWindowWhenDBclick($(this), $(this).text(), $(this).text());
+                openWindowWhenClick($(this), $(this).text(), $(this).text());
             });
         }
     }
-
-    /**************************** click osx dock element to open an osx-window ****************************/
+    /***************** open osx-windows when click dock icon *****************/
     $('.osx-dock td.mid').each(function(){
         var $td = $(this);
-        $(this).find('img').not('#Demo').click(function(){
-                var winId = $(this).attr('_win_id') + '';
-                var $win = $('#' + winId);
-
-                //open or minimize window
-                if($win.size() == 1){
-                    $.fn.osxWindow.toggle($win);
-                    return;
-                }
-
-                $(this).fadeTo('fast', 0.8);
-
-                //create new window
-                var winIdNew = 'osxWindow_' + new Date().getTime();
-                $(this).attr({
-                    _win_id: winIdNew
-                });
-                var $win = $('<div/>').text($(this).attr('id')).osxWindow('init', {
-                    id: winIdNew,
-                    title: 'Osx-Window ' + $(this).attr('id'),
-                    width: 500,
-                    height: 300,
-                    modal: false,
-                    beforeClose: function($win){
-                        $('#' + $win.attr('_dock_element_id')).fadeTo('fast', 1);
-                    }
-                });
-                $win.attr({
-                    _dock_element_id: $(this).attr('id')
-                });
+        $(this).find('a').not('#Demo').click(function(){
+            openWindowWhenClick($(this), $(this).attr('title_prop'), $(this).attr('title_prop'));
         });
     });
-
-    /**************************** api-demo event ****************************/
+    /***************** show api demo *****************/
     $('#Demo').click(function () {
         $('#api-demo-iframe').osxWindow('init', {
             title: 'Osx-Window-Hello',
@@ -81,90 +49,6 @@ $(function () {
             confirmBeforeClose: true
         });
     });
-
-    function openWindowWhenDBclick($target, content, taskText){
-        var logger = jQuery.osxUtils.logger;
-
-        //reopen Maximized window
-        var $winOpened = $('#' + $target.attr('win_id'));
-        if ($winOpened.size() == 1) {
-            logger.info('reopen Maximized window, winId=' + $target.attr('win_id'));
-
-            var display = $winOpened.css('display');
-            $winOpened.osxWindow('open');
-            return;
-        }
-
-        logger.info('create new window...');
-        var osxWindowId = 'osx-window_' + new Date().getTime();
-        var winConfig = {
-            id: osxWindowId,
-            title: 'Window-' + content,
-            width: $(document.body).width() * 0.5,
-            height: $(document.body).height() * 0.4,
-            afterOpen: function($win){
-                //check taskLi exist in taskUL or not
-                var isCreated = false;
-                $(jQuery.DesktopGrid.dataObj.barTopId).find('.task span').each(function(){
-                    if($(this).attr('win_id') == $win.attr('id')){
-                        isCreated = true;
-                        return false;
-                    }
-                });
-                if(isCreated){
-                    logger.info('task li already created, so return......');
-                    return;
-                }
-
-                //add taskLi to taskUL
-                var $taskLi = $('<span/>').text(taskText).attr({
-                    win_id: osxWindowId,
-                    cell_id: $target.attr('id')
-                }).click(function(){
-                    var $win = $('#' + $(this).attr('win_id'));
-
-                    var currentScreen = jQuery.DesktopGrid.dataObj.currentScreen;
-                    var screen_id_of_win = parseInt($win.attr("screen_id"));
-
-                    if(screen_id_of_win == currentScreen){
-                        $.fn.osxWindow.toggle($win);
-                    }else{
-                        jQuery.DesktopGrid.goToScreen(screen_id_of_win);
-                        $.fn.osxWindow.open($win);
-                    }
-                }).appendTo($(jQuery.DesktopGrid.dataObj.barTopId).find('.task'));
-
-                return true;
-            },
-            afterMinimize: function ($win) {
-
-            },
-            beforeClose: function ($win) {
-                logger.info('window closed, winId=' + $win.attr('id'));
-                var cellId = $win.attr('cell_id');
-                $('#' + cellId).removeAttr('win_id').fadeTo('fast', 1);
-
-                //delete taskLi from taskUl
-                $(jQuery.DesktopGrid.dataObj.barTopId).find('.task span').each(function(){
-                    if($(this).attr('win_id') == $win.attr('id')){
-                        $(this).remove();
-                    }
-                });
-                return true;
-            }
-        };
-
-        //create new window
-        $target.attr({
-            win_id: osxWindowId
-        }).fadeTo('fast', 0.8);
-
-        var $win = $('<div/>').text($target.attr('id')).osxWindow('init', winConfig);
-
-        $win.attr({
-            cell_id: $target.attr('id')
-        });
-    }
 
     /**************************** osx window css and event enhance ****************************/
 /*   $('<div>helloWindow...</div>').osxWindow('init', {
@@ -214,3 +98,93 @@ $(function () {
        hideManner: 'slideUp'
    });*/
 });
+
+//******************** open window when click desktop grid cell, or dock icon ********************
+function openWindowWhenClick($targer, winTitle, taskText){
+    var logger = jQuery.osxUtils.logger;
+
+    //reopen Maximized window
+    var $winOpened = $('#' + $targer.attr('win_id'));
+    if ($winOpened.size() == 1) {
+        logger.info('reopen Maximized window, winId=' + $targer.attr('win_id'));
+
+        var display = $winOpened.css('display');
+        $winOpened.osxWindow('open');
+        return;
+    }
+
+    logger.info('create new window...');
+    var osxWindowId = 'osx-window_' + new Date().getTime();
+    var winConfig = {
+        id: osxWindowId,
+        title: 'Window-' + winTitle,
+        width: $(document.body).width() * 0.5,
+        height: $(document.body).height() * 0.4,
+        afterOpen: function($win){
+            //check taskLi exist in taskUL or not
+            var isCreated = false;
+            $(jQuery.DesktopGrid.dataObj.barTopId).find('.task span').each(function(){
+                if($(this).attr('win_id') == $win.attr('id')){
+                    isCreated = true;
+                    return;
+                }
+            });
+            if(isCreated){
+                logger.info('task li already created, so return......');
+                return;
+            }
+
+            addToTaskBar($targer.find('img').clone(), $win);
+
+            return true;
+        },
+        afterMinimize: function ($win) {
+
+        },
+        beforeClose: function ($win) {
+            logger.info('window closed, winId=' + $win.attr('id'));
+            //delete taskLi from taskUl
+            $(jQuery.DesktopGrid.dataObj.barTopId).find('.task span').each(function(){
+                if($(this).attr('win_id') == $win.attr('id')){
+                    $(this).remove();
+                }
+            })
+            return true;
+        }
+    };
+
+    //create new window
+    $targer.attr({
+        win_id: osxWindowId
+    });
+
+    var $win = $('<div/>').text($targer.attr('id')).osxWindow('init', winConfig);
+
+    $win.attr({
+        cell_id: $targer.attr('id')
+    });
+}
+
+//******************** create task bar image ********************
+function addToTaskBar($image, $win){
+    $image.css({
+        width: 18,
+        height: 18
+    })
+
+    var $taskLi = $('<span/>').html($image).attr({
+        win_id: $win.attr('id')
+    }).click(function(){
+        var $winTarget = $('#' + $(this).attr('win_id'));
+
+        var currentScreen = jQuery.DesktopGrid.dataObj.currentScreen;
+        var screen_id_of_win = parseInt($winTarget.attr("screen_id"));
+
+        if(screen_id_of_win == currentScreen){
+            $.fn.osxWindow.toggle($winTarget);
+        }else{
+            jQuery.DesktopGrid.goToScreen(screen_id_of_win);
+            $.fn.osxWindow.open($winTarget);
+        }
+    }).appendTo($(jQuery.DesktopGrid.dataObj.barTopId).find('.task'));
+}

@@ -1,8 +1,9 @@
-/*------------------------------------- osx ToolBar And Menu----------------------------------------------*/
+/*------------------------------------- osx ToolBar screen thumbnail ----------------------------------------------*/
 #bar_top li.screenThumbnailTd{
     position: absolute; right: 0px; top: 0px;
 }
 
+/*------------------------------------- osx ToolBar And Menu----------------------------------------------*/
 #bar_top ul{
     float: left;
 }
@@ -24,7 +25,7 @@
     top: 0;
 }
 
-/* `Bar >> Links
+/* `Bar >> Links >> sub bar
 ----------------------------------------------------------------------------------------------------*/
 
 #bar_top li{
@@ -33,7 +34,7 @@
 
 #bar_top li a{
     display: block;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 #bar_top li a {
@@ -97,6 +98,15 @@
     background: #06c url(../images/bar_top_link.png) repeat-x;
     color: #fff;
     text-shadow: none;
+}
+
+/* `Bar >> task
+----------------------------------------------------------------------------------------------------*/
+#bar_top li.task{
+    border-left: 1px solid #333;
+    height: 21px;
+    line-height: 21px;
+    overflow: hidden;
 }
 
 #bar_top li.task span{

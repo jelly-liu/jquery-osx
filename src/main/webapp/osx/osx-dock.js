@@ -6,7 +6,7 @@ $(function () {
                 $(this).animate({
                     width: 72
                 }, 'fast', function () {
-                    $td.find('.titleProp').text($(this).attr('titleProp')).css({
+                    $td.find('.titleProp').text($(this).attr('title_prop')).css({
                         left: $(this).position().left,
                         width: $(this).width()
                     }).show();
