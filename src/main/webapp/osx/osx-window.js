@@ -42,6 +42,7 @@
         id: null,
         //the window title
         title: 'window',
+        titleIcon: null,
         windowBackgroundColor: null,
         //specify an number between [0,1]
         windowBackgroundOpacity: 0.8,
@@ -151,7 +152,12 @@
         });
 
         //set window title
-        $win.find('.osx-window-title').html(opt.title);
+        $windowTitle = $win.find('.osx-window-title');
+        $windowTitle.empty();
+        if(opt.titleIcon != null){
+            $windowTitle.append(opt.titleIcon).append('&nbsp;&nbsp;');
+        }
+        $windowTitle.append(opt.title);
 
         //set container opacity
         $win.find('.osx-window-bg').css({

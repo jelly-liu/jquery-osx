@@ -21,6 +21,9 @@ $(function () {
     var cellContentAry = $.DesktopGrid.make(desktopGridConfig);
     /***************** _make desktop grid end *****************/
 
+    /***************** bind apple logo event *****************/
+    bindAppleLogoEvent();
+
     /***************** open osx-windows when click cell *****************/
     for (var i = 0; i < cellContentAry.length; i++) {
         for (var j = 0; j < cellContentAry[i].length; j++) {
@@ -49,55 +52,13 @@ $(function () {
             confirmBeforeClose: true
         });
     });
-
-    /**************************** osx window css and event enhance ****************************/
-/*   $('<div>helloWindow...</div>').osxWindow('init', {
-       title: 'Osx-Window-Hello',
-       width: 500,
-       height: 300,
-       windowBackgroundOpacity: 0.8,
-       modal: false,
-       showManner: 'fadeIn'
-   });
-
-   $('<div>This is an alert</div>').osxMessage('alert', {
-       title: 'Osx-Alert',
-       windowBackgroundOpacity: 0.8
-   });
-
-   $('<div>This is an confirm</div>').osxMessage('confirm', {
-       title: 'Osx-Confirm',
-       windowBackgroundOpacity: 0.8,
-       onOk: function(){
-           alert('onOk...');
-       },
-       onCancel: function(){
-           alert('onCancel...');
-       }
-   });
-
-   $('<div>This is an prompt</div>').osxMessage('prompt', {
-       title: 'Osx-Prompt',
-       windowBackgroundOpacity: 0.8,
-       onOk: function(text){
-           alert('onOk, ' + text);
-       },
-       onCancel: function(text){
-           alert('onCancel, ' + text);
-       }
-   });
-
-   $('<div>This is an note</div>').osxMessage('note', {
-       title: 'Osx-Note',
-       windowBackgroundOpacity: 0.8,
-       timeout: 3,
-       width: 150,
-       height: 80,
-       location: 'br',
-       showManner: 'slideDown',
-       hideManner: 'slideUp'
-   });*/
 });
+
+function bindAppleLogoEvent() {
+    $('.apple-logo').click(function () {
+
+    })
+}
 
 //******************** open window when click desktop grid cell, or dock icon ********************
 function openWindowWhenClick($targer, winTitle, taskText){
@@ -118,6 +79,7 @@ function openWindowWhenClick($targer, winTitle, taskText){
     var winConfig = {
         id: osxWindowId,
         title: 'Window-' + winTitle,
+        titleIcon: $targer.find('img').clone().css({width: '14px', height: '14px', position: 'relative', top: '2px'}),
         width: $(document.body).width() * 0.5,
         height: $(document.body).height() * 0.4,
         afterOpen: function($win){
@@ -188,3 +150,51 @@ function addToTaskBar($image, $win){
         }
     }).appendTo($(jQuery.DesktopGrid.dataObj.barTopId).find('.task'));
 }
+
+/**************************** osx window api demo ****************************/
+/*   $('<div>helloWindow...</div>').osxWindow('init', {
+ title: 'Osx-Window-Hello',
+ width: 500,
+ height: 300,
+ windowBackgroundOpacity: 0.8,
+ modal: false,
+ showManner: 'fadeIn'
+ });
+
+ $('<div>This is an alert</div>').osxMessage('alert', {
+ title: 'Osx-Alert',
+ windowBackgroundOpacity: 0.8
+ });
+
+ $('<div>This is an confirm</div>').osxMessage('confirm', {
+ title: 'Osx-Confirm',
+ windowBackgroundOpacity: 0.8,
+ onOk: function(){
+ alert('onOk...');
+ },
+ onCancel: function(){
+ alert('onCancel...');
+ }
+ });
+
+ $('<div>This is an prompt</div>').osxMessage('prompt', {
+ title: 'Osx-Prompt',
+ windowBackgroundOpacity: 0.8,
+ onOk: function(text){
+ alert('onOk, ' + text);
+ },
+ onCancel: function(text){
+ alert('onCancel, ' + text);
+ }
+ });
+
+ $('<div>This is an note</div>').osxMessage('note', {
+ title: 'Osx-Note',
+ windowBackgroundOpacity: 0.8,
+ timeout: 3,
+ width: 150,
+ height: 80,
+ location: 'br',
+ showManner: 'slideDown',
+ hideManner: 'slideUp'
+ });*/
